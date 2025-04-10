@@ -109,11 +109,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const role = localStorage.getItem('userRole')
   
-  if (to.matched.some(record => record.meta.requiresAuth) && !user) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !role) {
     next('/login')
-  } else if (to.matched.some(record => record.meta.requiresAdmin) && (!user || user.role_name !== 'admin')) {
+  } else if (to.matched.some(record => record.meta.requiresAdmin) && (!role || role !== 'admin')) {
     next('/')
   } else {
     next()

@@ -1,5 +1,5 @@
 from django.urls import path
-from store.views.auth_views import RegisterView, LogoutView, UserProfileView
+from store.views.auth_views import RegisterView, LogoutView, UserProfileView ,CustomLoginView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from store.views import (
     user_views, product_views, order_views, orderitem_views,
@@ -10,7 +10,7 @@ from store.views import (
 urlpatterns = [
     # Auth
     path('auth/register/', RegisterView.as_view(), name='register'),
-    path('auth/login/', TokenObtainPairView.as_view(), name='login'),
+    path('auth/login/', CustomLoginView.as_view(), name='login'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('auth/profile/', UserProfileView.as_view(), name='profile'),

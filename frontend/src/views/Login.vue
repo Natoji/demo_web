@@ -75,35 +75,41 @@ export default {
     const router = useRouter();
 
     const handleLogin = async () => {
-      loading.value = true;
-      error.value = '';
+    loading.value = true;
+    error.value = '';
 
-      try {
-        const response = await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/auth/login/`, {
-          email: email.value, // Using email here
-          password: password.value,
-        });
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/auth/login/`, {
+        email: email.value, // Using email here
+        password: password.value,
+      });
 
-        const { refresh, access } = response.data;
+      const { refresh, access, user } = response.data;
 
         localStorage.setItem('refresh_token', refresh);
         localStorage.setItem('access_token', access);
-
-        emit('login-success', response.data);
-
+        localStorage.setItem('userId', user.id);
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userFullname', user.fullname);
+        localStorage.setItem('userRole', user.role);
+      emit('login-success', response.data);
+      if(user.role=="admin"){
+        router.push('/admin/dashboard'); // Redirect to home page after successful login
+      }else{
         router.push('/');
-
-      } catch (err) {
-        console.error('Login error:', err);
-        if (err.response && err.response.data && err.response.data.message) {
-          error.value = err.response.data.message;
-        } else {
-          error.value = 'Invalid email or password'; // Updated error message
-        }
-      } finally {
-        loading.value = false;
       }
-    };
+
+    } catch (err) {
+      console.error('Login error:', err);
+      if (err.response && err.response.data && err.response.data.message) {
+        error.value = err.response.data.message;
+      } else {
+        error.value = 'Invalid email or password'; // Updated error message
+      }
+    } finally {
+      loading.value = false;
+    }
+  };
 
     return {
       email, // Using email here
