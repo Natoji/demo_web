@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django DB
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Compiled files
+*.mo
+*.pot
+*.pyc
+*.pyo
+*.py~
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+
+# Editor config
+.vscode/
+.idea/
+
+# Secrets & env
+.env
+.env.*
+
+# Django Migrations (chỉ nếu bạn muốn bỏ qua migrations cũ, tùy chọn)
+# */migrations/*.py
+# */migrations/*.pyc
+# !*/migrations/__init__.py
+
+# Node
+node_modules/
+
+# OS system files
+.DS_Store
+Thumbs.db
