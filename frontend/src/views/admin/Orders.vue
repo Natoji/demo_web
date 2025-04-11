@@ -23,27 +23,11 @@
               type="text"
               id="search"
               v-model="searchQuery"
-              placeholder="Search by order ID or customer..."
+              placeholder="Search by order ID"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
-        </div>
-
-        <div class="w-full md:w-48">
-          <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select
-            id="status"
-            v-model="selectedStatus"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
         </div>
 
         <div class="w-full md:w-48">
@@ -72,7 +56,6 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Status</th>
               <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -82,10 +65,10 @@
                 #{{ order.id }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ order.User.fullname }}
+                {{ userNames[order.user] || 'Loading...' }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                ${{ typeof order.total_price === 'string' ? parseFloat(order.total_price).toFixed(2) : 'N/A' }}
+                ${{ parseFloat(order.total_amount)?.toFixed(2) || 'N/A' }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <select
@@ -106,14 +89,6 @@
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="order.payment_status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
-                >
-                  {{ order.payment_status }}
-                </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
@@ -168,11 +143,11 @@
         </div>
 
         <div class="p-6">
-          <p>User Name: {{ selectedOrder.User.fullname }}</p>
-          <p>Total Price: ${{ typeof selectedOrder.total_price === 'string' ? parseFloat(selectedOrder.total_price).toFixed(2) : 'N/A' }}</p>
-          <p>Voucher Code: {{ selectedOrder.Voucher ? selectedOrder.Voucher.code : 'N/A' }}</p>
+          <p>User Name: {{ userNames[selectedOrder.user] || 'N/A' }}</p>
+          <p>Total Price: ${{ parseFloat(selectedOrder.total_amount)?.toFixed(2) || 'N/A' }}</p>
           <p>Status: {{ selectedOrder.status }}</p>
-          <p>Payment Status: {{ selectedOrder.payment_status }}</p>
+          <p>Created At: {{ formatDate(selectedOrder.created_at) }}</p>
+          <p>Updated At: {{ formatDate(selectedOrder.updated_at) }}</p>
 
           <div class="flex justify-end mt-4">
             <button
@@ -189,7 +164,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
 import {
   Search,
@@ -217,15 +192,48 @@ export default {
     const showOrderDetailsModal = ref(false);
     const selectedOrder = ref({});
     const orders = ref([]);
+    const userNames = ref({});
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
+    const fetchingUsers = ref(false); // Thêm trạng thái fetching
+
+    const getToken = () => localStorage.getItem('access_token');
+    const setAuthHeader = () => {
+      const token = getToken();
+      if (token) axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      else delete axios.defaults.headers.common['Authorization'];
+    };
+
+    const fetchUser = async (userId) => {
+      setAuthHeader();
+      console.log('Fetching user:', userId); // DEBUG
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/users/${userId}`);
+        console.log('User data received:', response.data); // DEBUG
+        userNames.value[userId] = response.data.fullname;
+        console.log('userNames after update:', userNames.value); // DEBUG
+      } catch (error) {
+        console.error(`Error fetching user ${userId}:`, error);
+        userNames.value[userId] = 'N/A';
+      } finally {
+        // Không cần thiết phải set fetchingUsers về false ở đây vì có thể có nhiều user đang được fetch
+      }
+    };
 
     const fetchOrders = async () => {
+      setAuthHeader();
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/orders/all`);
+        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/orders`);
         orders.value = response.data;
+        console.log('Orders data received:', orders.value); // DEBUG
+        fetchingUsers.value = true; // Bắt đầu fetching users
+        // Fetch user details for each order
+        const userFetchPromises = orders.value.map(order => fetchUser(order.user));
+        await Promise.all(userFetchPromises); // Đợi tất cả user được fetch xong
+        fetchingUsers.value = false; // Kết thúc fetching users
       } catch (error) {
         console.error('Error fetching orders:', error);
+        fetchingUsers.value = false;
       }
     };
 
@@ -233,51 +241,43 @@ export default {
 
     const filteredOrders = computed(() => {
       let result = [...orders.value];
-
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
-        result = result.filter(
-          (order) =>
-            String(order.id).toLowerCase().includes(query) ||
-            String(order.User.fullname).toLowerCase().includes(query)
+        result = result.filter(order =>
+          String(order.id).toLowerCase().includes(query) ||
+          (userNames[order.user] && userNames[order.user].toLowerCase().includes(query))
         );
       }
-
       if (selectedStatus.value) {
-        result = result.filter((order) => order.status === selectedStatus.value);
+        result = result.filter(order => order.status === selectedStatus.value);
       }
-
       if (dateRange.value !== 'all') {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-
+        yesterday.setHours(0, 0, 0, 0);
+        yesterday.setMilliseconds(0);
         const thisWeekStart = new Date(today);
         thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
-
+        thisWeekStart.setHours(0, 0, 0, 0);
+        thisWeekStart.setMilliseconds(0);
         const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-
-        result = result.filter((order) => {
+        thisMonthStart.setHours(0, 0, 0, 0);
+        thisMonthStart.setMilliseconds(0);
+        result = result.filter(order => {
           const orderDate = new Date(order.created_at);
-
-          if (dateRange.value === 'today') {
-            return orderDate.getTime() === today.getTime();
-          } else if (dateRange.value === 'yesterday') {
-            return orderDate.getTime() === yesterday.getTime();
-          } else if (dateRange.value === 'week') {
-            return orderDate >= thisWeekStart;
-          } else if (dateRange.value === 'month') {
-            return orderDate >= thisMonthStart;
-          }
-
+          orderDate.setHours(0, 0, 0, 0);
+          orderDate.setMilliseconds(0);
+          if (dateRange.value === 'today') return orderDate.getTime() === today.getTime();
+          else if (dateRange.value === 'yesterday') return orderDate.getTime() === yesterday.getTime();
+          else if (dateRange.value === 'week') return orderDate >= thisWeekStart;
+          else if (dateRange.value === 'month') return orderDate >= thisMonthStart && orderDate < new Date(today.getFullYear(), today.getMonth() + 1, 1);
           return true;
         });
       }
-
+      // Default sorting by created_at descending (vẫn giữ lại để hiển thị mới nhất trước)
       result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
       return result;
     });
 
@@ -293,14 +293,11 @@ export default {
     };
 
     const updateOrderStatus = async (orderId, status) => {
+      setAuthHeader();
       try {
-        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/orders/updte/${orderId}`, {
-          status: status,
-        });
+        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/orders/${orderId}`, { status });
         fetchOrders();
-        if (selectedOrder.value.id === orderId) {
-          selectedOrder.value.status = status;
-        }
+        if (selectedOrder.value.id === orderId) selectedOrder.value.status = status;
       } catch (error) {
         console.error('Error updating order status:', error);
       }
@@ -316,6 +313,15 @@ export default {
       alert('Orders exported successfully');
     };
 
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+
+    watch(searchQuery, () => currentPage.value = 1);
+    watch(selectedStatus, () => currentPage.value = 1);
+    watch(dateRange, () => currentPage.value = 1);
+
     return {
       searchQuery,
       selectedStatus,
@@ -330,6 +336,9 @@ export default {
       exportOrders,
       currentPage,
       itemsPerPage,
+      formatDate,
+      userNames,
+      fetchingUsers, // Expose trạng thái fetching nếu cần hiển thị loading
     };
   },
 };

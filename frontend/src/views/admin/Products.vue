@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Manage Products</h1>
       <button
-        @click="showAddProductModal = true"
+        @click="openAddProductModal"
         class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center"
       >
         <Plus class="h-5 w-5 mr-1" />
@@ -62,9 +62,9 @@
           <thead class="bg-gray-50">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -75,27 +75,19 @@
                   <img :src="product.img" :alt="product.name" class="w-10 h-10 object-cover rounded-md mr-3" />
                   <div>
                     <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
-                    <div class="text-sm text-gray-500 truncate max-w-xs">{{ product.description }}</div>
                   </div>
                 </div>
               </td>
+              <td class="px-6 py-4 text-sm text-gray-500">{{ product.description }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-rose-100 text-rose-800">
-                  {{ getCategoryName(product.cat_Id) }}
+                  {{ getCategoryName(product.category) }}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ parseFloat(product.price).toFixed(2) }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="product.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                >
-                  {{ product.status }}
-                </span>
-              </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
-                  @click="editProduct(product)"
+                  @click="openEditProductModal(product)"
                   class="text-indigo-600 hover:text-indigo-900 mr-3"
                 >
                   <Edit class="h-5 w-5" />
@@ -141,6 +133,16 @@
           </div>
 
           <div class="mb-4">
+            <label for="productDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              id="productDescription"
+              v-model="currentProduct.description"
+              rows="3"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            ></textarea>
+          </div>
+
+          <div class="mb-4">
             <label for="productPrice" class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
             <input
               type="number"
@@ -157,7 +159,7 @@
             <label for="productCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select
               id="productCategory"
-              v-model="currentProduct.cat_Id"
+              v-model="currentProduct.category"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               required
             >
@@ -176,19 +178,6 @@
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               required
             />
-          </div>
-
-          <div class="mb-4">
-            <label for="productStatus" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              id="productStatus"
-              v-model="currentProduct.status"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-              required
-            >
-              <option value="available">available</option>
-              <option value="unavailable">unavailable</option>
-            </select>
           </div>
 
           <div class="flex justify-end gap-3 mt-6">
@@ -248,7 +237,6 @@ export default {
     Package,
   },
   setup() {
-    // State
     const searchQuery = ref('');
     const selectedCategory = ref('');
     const sortBy = ref('name');
@@ -261,72 +249,81 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
 
-    // Current product for add/edit
     const currentProduct = ref({
+      id: null,
       name: '',
+      description: '',
       price: 0,
+      stock: 0,
+      brand: 1,
       img: '/placeholder.svg?height=300&width=400',
-      cat_Id: 1,
-      status: 'available',
+      category: 1,
     });
 
-    // Computed
     const filteredProducts = computed(() => {
       let result = [...products.value];
-
-      // Filter by search query
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
-        result = result.filter((product) => {
-          const productName = product.name ? product.name.toLowerCase() : '';
-          return productName.includes(query);
+        result = result.filter(product => {
+          const name = product.name ? product.name.toLowerCase() : '';
+          const desc = product.description ? product.description.toLowerCase() : '';
+          return name.includes(query) || desc.includes(query);
         });
       }
-
-      // Filter by category
       if (selectedCategory.value) {
-        result = result.filter((product) => product.cat_Id === parseInt(selectedCategory.value));
+        result = result.filter(product => product.category === parseInt(selectedCategory.value));
       }
-
-      // Sort
       result.sort((a, b) => {
-        if (sortBy.value === 'name') {
-          return a.name.localeCompare(b.name);
-        } else if (sortBy.value === 'price') {
-          return parseFloat(a.price) - parseFloat(b.price);
-        } else if (sortBy.value === 'cat_Id') {
-          return a.cat_Id - b.cat_Id;
-        }
+        if (sortBy.value === 'name') return a.name.localeCompare(b.name);
+        if (sortBy.value === 'price') return parseFloat(a.price) - parseFloat(b.price);
+        if (sortBy.value === 'cat_Id') return a.category - b.category;
         return 0;
       });
-
       return result;
     });
 
     const paginatedProducts = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
-      const end = start + itemsPerPage.value;
-      return filteredProducts.value.slice(start, end);
+      return filteredProducts.value.slice(start, start + itemsPerPage.value);
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(filteredProducts.value.length / itemsPerPage.value);
-    });
+    const totalPages = computed(() => Math.ceil(filteredProducts.value.length / itemsPerPage.value));
 
-    // Methods
-    const getCategoryName = (categoryId) => {
-      const category = categories.value.find((c) => c.id === categoryId);
-      return category ? category.name : '';
+    const getCategoryName = (id) => {
+      const cat = categories.value.find(c => c.id === id);
+      return cat ? cat.name : '';
     };
 
     const resetCurrentProduct = () => {
       currentProduct.value = {
+        id: null,
         name: '',
+        description: '',
         price: 0,
+        stock: 0,
+        brand: 1,
         img: '/placeholder.svg?height=300&width=400',
-        cat_Id: 1,
-        status: 'available',
+        category: 1,
       };
+    };
+
+    const openAddProductModal = () => {
+      resetCurrentProduct();
+      showAddProductModal.value = true;
+      showEditProductModal.value = false;
+    };
+
+    const openEditProductModal = async (product) => {
+      try {
+        const token = localStorage.getItem('access_token');
+        const res = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/products/${product.id}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        currentProduct.value = { ...res.data, category: res.data.category };
+        showEditProductModal.value = true;
+      } catch (err) {
+        console.error('Edit product fetch error:', err);
+      }
     };
 
     const closeProductModal = () => {
@@ -337,31 +334,49 @@ export default {
 
     const addProduct = async () => {
       try {
-        await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/menu-items/create`, currentProduct.value);
+        const token = localStorage.getItem('access_token');
+        await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/products/`, {
+          name: currentProduct.value.name,
+          description: currentProduct.value.description,
+          price: parseFloat(currentProduct.value.price),
+          stock: 0,
+          brand: 1,
+          category: parseInt(currentProduct.value.category),
+          img: currentProduct.value.img,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
         await fetchProducts();
         closeProductModal();
-      } catch (error) {
-        console.error('Error adding product:', error);
-      }
-    };
-
-    const editProduct = async (product) => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/menu-items/get/${product.id}`);
-        currentProduct.value = response.data;
-        showEditProductModal.value = true;
-      } catch (error) {
-        console.error('Error fetching product:', error);
+      } catch (err) {
+        console.error('Add product error:', err);
       }
     };
 
     const updateProduct = async () => {
       try {
-        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/menu-items/update/${currentProduct.value.id}`, currentProduct.value);
+        const token = localStorage.getItem('access_token');
+        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/products/${currentProduct.value.id}/`, {
+          name: currentProduct.value.name,
+          description: currentProduct.value.description,
+          price: parseFloat(currentProduct.value.price),
+          stock: 0,
+          brand: 1,
+          category: parseInt(currentProduct.value.category),
+          img: currentProduct.value.img,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
         await fetchProducts();
         closeProductModal();
-      } catch (error) {
-        console.error('Error updating product:', error);
+      } catch (err) {
+        console.error('Update product error:', err);
       }
     };
 
@@ -372,59 +387,76 @@ export default {
 
     const confirmDelete = async () => {
       try {
-        await axios.delete(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/menu-items/delete/${productToDeleteId.value}`);
+        const token = localStorage.getItem('access_token');
+        await axios.delete(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/products/${productToDeleteId.value}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         await fetchProducts();
         showDeleteModal.value = false;
         productToDeleteId.value = null;
-      } catch (error) {
-        console.error('Error deleting product:', error);
+      } catch (err) {
+        console.error('Delete product error:', err);
       }
     };
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/menu-items/all`);
-        products.value = response.data;
-      } catch (error) {
-        console.error('Error fetching products:', error);
+        const token = localStorage.getItem('access_token');
+        const res = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/products/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        products.value = res.data;
+      } catch (err) {
+        console.error('Fetch products error:', err);
       }
     };
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/all');
-        categories.value = response.data;
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+        const token = localStorage.getItem('access_token');
+        const res = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        categories.value = res.data;
+      } catch (err) {
+        console.error('Fetch categories error:', err);
       }
     };
 
-    onMounted(async () => {
-      await fetchProducts();
-      await fetchCategories();
+    onMounted(() => {
+      fetchProducts();
+      fetchCategories();
     });
 
     return {
       searchQuery,
       selectedCategory,
       sortBy,
-      categories,
-      filteredProducts,
-      paginatedProducts,
-      totalPages,
-      currentPage,
       showAddProductModal,
       showEditProductModal,
       showDeleteModal,
+      productToDeleteId,
+      products,
+      categories,
+      currentPage,
+      itemsPerPage,
       currentProduct,
+      filteredProducts,
+      paginatedProducts,
+      totalPages,
       getCategoryName,
+      openAddProductModal,
+      openEditProductModal,
+      closeProductModal,
       addProduct,
-      editProduct,
       updateProduct,
       deleteProduct,
       confirmDelete,
-      closeProductModal,
     };
   },
 };
 </script>
+
+<style scoped>
+/* Optional: custom styles */
+</style>

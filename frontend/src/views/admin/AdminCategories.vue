@@ -2,10 +2,8 @@
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Manage Categories</h1>
-      <button
-        @click="showAddCategoryModal = true"
-        class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center"
-      >
+      <button @click="openAddCategoryModal"
+        class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center">
         <Plus class="h-5 w-5 mr-1" />
         Add Category
       </button>
@@ -16,13 +14,8 @@
         <div class="flex-grow">
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
           <div class="relative">
-            <input
-              type="text"
-              id="search"
-              v-model="searchQuery"
-              placeholder="Search categories..."
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-            >
+            <input type="text" id="search" v-model="searchQuery" placeholder="Search categories..."
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
         </div>
@@ -34,16 +27,19 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th @click="sortTable('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+              <th @click="sortTable('name')"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                 Category
                 <span v-if="sortColumn === 'name'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
               </th>
-              <th @click="sortTable('description')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+              <th @click="sortTable('description')"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                 Description
                 <span v-if="sortColumn === 'description'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
               </th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
-              <th @click="sortTable('id')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+              <th @click="sortTable('id')"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                 ID
                 <span v-if="sortColumn === 'id'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
               </th>
@@ -55,12 +51,8 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center overflow-hidden">
-                    <img
-                      v-if="category.image"
-                      :src="category.image"
-                      :alt="category.name"
-                      class="h-full w-full object-cover"
-                    >
+                    <img v-if="category.image" :src="category.image" :alt="category.name"
+                      class="h-full w-full object-cover">
                     <Utensils v-else class="h-5 w-5 text-gray-500" />
                   </div>
                   <div class="ml-4">
@@ -79,19 +71,13 @@
                 {{ category.id }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  @click="editCategory(category)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-3"
-                >
+                <button @click="openEditCategoryModal(category)" class="text-indigo-600 hover:text-indigo-900 mr-3">
                   <Edit class="h-5 w-5" />
                 </button>
-                <button
-                  @click="deleteCategory(category.id)"
-                  class="text-red-600 hover:text-red-900"
+                <button @click="confirmDeleteCategory(category.id)" class="text-red-600 hover:text-red-900"
                   :disabled="category.productCount > 0"
                   :class="{ 'opacity-50 cursor-not-allowed': category.productCount > 0 }"
-                  :title="category.productCount > 0 ? 'Cannot delete category with products' : 'Delete Category'"
-                >
+                  :title="category.productCount > 0 ? 'Cannot delete category with products' : 'Delete Category'">
                   <Trash2 class="h-5 w-5" />
                 </button>
               </td>
@@ -107,13 +93,16 @@
       </div>
     </div>
 
-    <div class="flex justify-center mt-4">
-      <button :disabled="currentPage === 1" @click="currentPage--" class="px-3 py-1 mx-1 border rounded-md">Previous</button>
+    <div class="flex justify-center mt-4" v-if="totalPages > 1">
+      <button :disabled="currentPage === 1" @click="currentPage--"
+        class="px-3 py-1 mx-1 border rounded-md">Previous</button>
       <span>{{ currentPage }} / {{ totalPages }}</span>
-      <button :disabled="currentPage === totalPages" @click="currentPage++" class="px-3 py-1 mx-1 border rounded-md">Next</button>
+      <button :disabled="currentPage === totalPages" @click="currentPage++"
+        class="px-3 py-1 mx-1 border rounded-md">Next</button>
     </div>
 
-    <div v-if="showAddCategoryModal || showEditCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div v-if="showAddCategoryModal || showEditCategoryModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div class="p-4 border-b">
           <h2 class="text-lg font-semibold">{{ showEditCategoryModal ? 'Edit Category' : 'Add New Category' }}</h2>
@@ -122,49 +111,30 @@
         <form @submit.prevent="showEditCategoryModal ? updateCategory() : addCategory()" class="p-4">
           <div class="mb-4">
             <label for="categoryName" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-            <input
-              type="text"
-              id="categoryName"
-              v-model="currentCategory.name"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-              required
-            >
+            <input type="text" id="categoryName" v-model="currentCategory.name"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
           </div>
 
           <div class="mb-4">
             <label for="categoryDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              id="categoryDescription"
-              v-model="currentCategory.description"
-              rows="3"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-            ></textarea>
+            <textarea id="categoryDescription" v-model="currentCategory.description" rows="3"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
           </div>
 
           <div class="mb-4">
             <label for="categoryImage" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-            <input
-              type="text"
-              id="categoryImage"
-              v-model="currentCategory.image"
+            <input type="text" id="categoryImage" v-model="currentCategory.image"
               placeholder="https://example.com/image.jpg"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-            >
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
             <p class="mt-1 text-xs text-gray-500">Leave empty to use default icon</p>
           </div>
 
           <div class="flex justify-end gap-3 mt-6">
-            <button
-              type="button"
-              @click="closeCategoryModal"
-              class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
+            <button type="button" @click="closeCategoryModal"
+              class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700"
-            >
+            <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700">
               {{ showEditCategoryModal ? 'Update' : 'Add' }}
             </button>
           </div>
@@ -182,16 +152,12 @@
           <p class="text-gray-700 mb-4">Are you sure you want to delete this category? This action cannot be undone.</p>
 
           <div class="flex justify-end gap-3">
-            <button
-              @click="showDeleteModal = false"
-              class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
+            <button @click="closeDeleteModal"
+              class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button
-              @click="confirmDelete"
-              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
+            <button @click="confirmDeleteCategoryAction"
+              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
               Delete
             </button>
           </div>
@@ -222,29 +188,36 @@ export default {
     Utensils,
   },
   setup() {
-    // State
     const searchQuery = ref('');
     const categories = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
-    const sortColumn = ref('id'); // Sắp xếp theo ID
+    const sortColumn = ref('id');
     const sortDirection = ref('asc');
     const showAddCategoryModal = ref(false);
     const showEditCategoryModal = ref(false);
     const showDeleteModal = ref(false);
     const categoryToDeleteId = ref(null);
 
-    // Current category for add/edit
     const currentCategory = ref({
+      id: null,
       name: '',
       description: '',
       image: '',
     });
 
-    // Computed
+    const getToken = () => localStorage.getItem('access_token');
+    const setAuthHeader = () => {
+      const token = getToken();
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } else {
+        delete axios.defaults.headers.common['Authorization'];
+      }
+    };
+
     const filteredCategories = computed(() => {
       let result = [...categories.value];
-
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
         result = result.filter(category =>
@@ -252,19 +225,15 @@ export default {
           (category.description && category.description.toLowerCase().includes(query))
         );
       }
-
-      // Sorting
       result.sort((a, b) => {
         const valueA = a[sortColumn.value];
         const valueB = b[sortColumn.value];
-
         if (typeof valueA === 'string' && typeof valueB === 'string') {
           return sortDirection.value === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
         } else {
           return sortDirection.value === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
         }
       });
-
       return result;
     });
 
@@ -278,13 +247,27 @@ export default {
       return Math.ceil(filteredCategories.value.length / itemsPerPage.value);
     });
 
-    // Methods
     const resetCurrentCategory = () => {
-      currentCategory.value = {
-        name: '',
-        description: '',
-        image: '',
-      };
+      currentCategory.value = { id: null, name: '', description: '', image: '' };
+    };
+
+    const openAddCategoryModal = () => {
+      resetCurrentCategory();
+      showAddCategoryModal.value = true;
+      showEditCategoryModal.value = false;
+    };
+
+    const openEditCategoryModal = async (category) => {
+      setAuthHeader();
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/${category.id}/`);
+        const apiCategory = response.data;
+        currentCategory.value = { ...apiCategory };
+        showEditCategoryModal.value = true;
+        showAddCategoryModal.value = false;
+      } catch (error) {
+        console.error('Error fetching category for edit:', error);
+      }
     };
 
     const closeCategoryModal = () => {
@@ -294,39 +277,29 @@ export default {
     };
 
     const addCategory = async () => {
+      setAuthHeader();
       try {
-        await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/create`, {
+        const response = await axios.post(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/`, {
           name: currentCategory.value.name,
           description: currentCategory.value.description,
+          image: currentCategory.value.image,
         });
-        await fetchCategories();
+        categories.value.push(response.data);
         closeCategoryModal();
       } catch (error) {
         console.error('Error adding category:', error);
-      }
-    };
-
-    const editCategory = async (category) => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/get/${category.id}`);
-        const apiCategory = response.data;
-        currentCategory.value = {
-          id: apiCategory.id,
-          name: apiCategory.name,
-          description: apiCategory.description || '',
-          image: apiCategory.image || '',
-        };
-        showEditCategoryModal.value = true;
-      } catch (error) {
-        console.error('Error fetching category:', error);
+      } finally {
+        await fetchCategories();
       }
     };
 
     const updateCategory = async () => {
+      setAuthHeader();
       try {
-        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/update/${currentCategory.value.id}`, {
+        await axios.put(`<span class="math-inline">\{import\.meta\.env\.VITE\_API\_DOMAIN\_SERVER\}/api/categories/</span>{currentCategory.value.id}/`, {
           name: currentCategory.value.name,
           description: currentCategory.value.description,
+          image: currentCategory.value.image,
         });
         await fetchCategories();
         closeCategoryModal();
@@ -335,25 +308,33 @@ export default {
       }
     };
 
-    const deleteCategory = (id) => {
+    const confirmDeleteCategory = (id) => {
       categoryToDeleteId.value = id;
       showDeleteModal.value = true;
     };
 
-    const confirmDelete = async () => {
+    const closeDeleteModal = () => {
+      showDeleteModal.value = false;
+      categoryToDeleteId.value = null;
+    };
+
+    const confirmDeleteCategoryAction = async () => {
+      setAuthHeader();
       try {
-        await axios.delete(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/delete/${categoryToDeleteId.value}`);
-        await fetchCategories();
-        showDeleteModal.value = false;
-        categoryToDeleteId.value = null;
+        await axios.delete(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/${categoryToDeleteId.value}/`);
+        categories.value = categories.value.filter(cat => cat.id !== categoryToDeleteId.value);
+        closeDeleteModal();
       } catch (error) {
         console.error('Error deleting category:', error);
+      } finally {
+        await fetchCategories();
       }
     };
 
     const fetchCategories = async () => {
+      setAuthHeader();
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/all`);
+        const response = await axios.get(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/`);
         categories.value = response.data;
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -367,8 +348,8 @@ export default {
         sortColumn.value = column;
         sortDirection.value = 'asc';
       }
+      currentPage.value = 1;
     };
-
     onMounted(async () => {
       await fetchCategories();
     });
@@ -384,12 +365,14 @@ export default {
       showEditCategoryModal,
       showDeleteModal,
       currentCategory,
-      addCategory,
-      editCategory,
-      updateCategory,
-      deleteCategory,
-      confirmDelete,
+      openAddCategoryModal,
+      openEditCategoryModal,
       closeCategoryModal,
+      addCategory,
+      updateCategory,
+      confirmDeleteCategory,
+      closeDeleteModal,
+      confirmDeleteCategoryAction,
       sortTable,
       sortColumn,
       sortDirection,

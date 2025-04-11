@@ -2,13 +2,6 @@
   <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Manage Users</h1>
-      <button
-        @click="showAddUserModal = true"
-        class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center"
-      >
-        <Plus class="h-5 w-5 mr-1" />
-        Add User
-      </button>
     </div>
 
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
@@ -36,8 +29,7 @@
           >
             <option value="">All Roles</option>
             <option value="admin">Admin</option>
-            <option value="customer">Customer</option>
-          </select>
+            <option value="client">Client</option> </select>
         </div>
       </div>
     </div>
@@ -57,18 +49,12 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Phone Number
-              </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 @click="sortUsers('role_name')"
               >
                 Role
                 <SortIcon :sortKey="sortKey" :sortOrder="sortOrder" :column="'role_name'" />
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Address
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -89,10 +75,12 @@
                   <div
                     class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold text-lg"
                   >
-                    {{ user.fullname ? user.fullname.charAt(0) : 'U' }}
+                    {{ user.fullname ? user.fullname.charAt(0) : "U" }}
                   </div>
                   <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ user.fullname }}</div>
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ user.fullname }}
+                    </div>
                     <div class="text-sm text-gray-500">ID: {{ user.id }}</div>
                   </div>
                 </div>
@@ -100,32 +88,19 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ user.email }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ user.phone_number }}
-              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
                   class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="
-                    user.role_name === 'admin'
-                      ? 'bg-purple-100 text-purple-800'
-                      : 'bg-blue-100 text-blue-800'
-                  "
+                  :class="user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'"
                 >
-                  {{ user.role_name === 'admin' ? 'Admin' : 'Customer' }}
+                  {{ user.role === "admin" ? "Admin" : "Client" }}
                 </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ user.address }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{ formatDate(user.created_at) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  @click="editUser(user)"
-                  class="text-indigo-600 hover:text-indigo-900 mr-3"
-                >
+                <button @click="editUser(user)" class="text-indigo-600 hover:text-indigo-900 mr-3">
                   <Edit class="h-5 w-5" />
                 </button>
                 <button
@@ -140,10 +115,7 @@
                     <UserCheck class="h-5 w-5" />
                   </template>
                 </button>
-                <button
-                  @click="deleteUser(user.id)"
-                  class="text-red-600 hover:text-red-900"
-                >
+                <button @click="deleteUser(user.id)" class="text-red-600 hover:text-red-900">
                   <Trash2 class="h-5 w-5" />
                 </button>
               </td>
@@ -162,11 +134,7 @@
     </div>
 
     <div class="flex justify-center mt-4" v-if="filteredUsers.length > itemsPerPage">
-      <button
-        @click="currentPage--"
-        :disabled="currentPage === 1"
-        class="px-4 py-2 mx-1 bg-gray-200 rounded-md"
-      >
+      <button @click="currentPage--" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-200 rounded-md">
         Previous
       </button>
       <button
@@ -185,7 +153,7 @@
       <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div class="p-4 border-b">
           <h2 class="text-lg font-semibold">
-            {{ showEditUserModal ? 'Edit User' : 'Add New User' }}
+            {{ showEditUserModal ? "Edit User" : "Add New User" }}
           </h2>
         </div>
 
@@ -212,32 +180,31 @@
               id="userEmail"
               v-model="currentUser.email"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-            />
-          </div>
-
-          <div class="mb-4">
-            <label for="userPhoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              id="userPhoneNumber"
-              v-model="currentUser.phone_number"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               required
             />
           </div>
 
-          <div class="mb-4">
+          <div class="mb-4" v-if="showAddUserModal">
             <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">
-              {{ showEditUserModal ? 'New Password (leave blank to keep current)' : 'Password' }}
+              Password
             </label>
             <input
               type="password"
               id="userPassword"
               v-model="currentUser.password"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-              :required="!showEditUserModal"
+              required
+            />
+          </div>
+          <div class="mb-4" v-else>
+            <label for="userPassword" class="block text-sm font-medium text-gray-700 mb-1">
+              New Password (leave blank to keep current)
+            </label>
+            <input
+              type="password"
+              id="userPassword"
+              v-model="currentUser.password"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
@@ -247,26 +214,13 @@
             </label>
             <select
               id="userRole"
-              v-model="currentUser.role_name"
+              v-model="currentUser.role"
               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
               required
             >
               <option value="admin">Admin</option>
-              <option value="customer">Customer</option>
+              <option value="client">Client</option>
             </select>
-          </div>
-
-          <div class="mb-4">
-            <label for="userAddress" class="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
-            <input
-              type="text"
-              id="userAddress"
-              v-model="currentUser.address"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
-              required
-            />
           </div>
 
           <div class="flex justify-end gap-3 mt-6">
@@ -277,11 +231,8 @@
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700"
-            >
-              {{ showEditUserModal ? 'Update' : 'Add' }}
+            <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700">
+              {{ showEditUserModal ? "Update" : "Add" }}
             </button>
           </div>
         </form>
@@ -309,10 +260,7 @@
             >
               Cancel
             </button>
-            <button
-              @click="confirmDelete"
-              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
+            <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
               Delete
             </button>
           </div>
@@ -323,8 +271,8 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, h } from 'vue';
-import axios from 'axios';
+import { ref, computed, onMounted, h } from "vue";
+import axios from "axios";
 import {
   Search,
   Plus,
@@ -335,12 +283,12 @@ import {
   Users,
   ChevronUp,
   ChevronDown,
-} from 'lucide-vue-next';
+} from "lucide-vue-next";
 
 const API_BASE_URL = `${import.meta.env.VITE_API_DOMAIN_SERVER}/api/users`;
 
 export default {
-  name: 'AdminUsers',
+  name: "AdminUsers",
   components: {
     Search,
     Plus,
@@ -349,36 +297,48 @@ export default {
     UserX,
     UserCheck,
     Users,
+    SortIcon: {
+      props: ["sortKey", "sortOrder", "column"],
+      setup(props) {
+        return () => {
+          if (props.sortKey !== props.column) return null;
+          return props.sortOrder === "asc" ? h(ChevronUp) : h(ChevronDown);
+        };
+      },
+    },
   },
   setup() {
     // State
-    const searchQuery = ref('');
-    const selectedRole = ref('');
+    const searchQuery = ref("");
+    const selectedRole = ref("");
     const showAddUserModal = ref(false);
     const showEditUserModal = ref(false);
     const showDeleteModal = ref(false);
     const userToDeleteId = ref(null);
     const users = ref([]);
-    const currentUser = ref({
-      fullname: '',
-      email: '',
-      phone_number: '',
-      password: '',
-      role_name: 'customer',
-      address: '',
-    });
+    const currentUser = ref({ id: null, fullname: "", email: "", password: "", role: "client" }); // Cập nhật thành "client"
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const sortKey = ref(null);
-    const sortOrder = ref('asc');
+    const sortOrder = ref("asc");
+
+    // **Helper function to get the token**
+    const getToken = () => localStorage.getItem("access_token");
+    const setAuthHeader = () => {
+      const token = getToken();
+      if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      else delete axios.defaults.headers.common["Authorization"];
+    };
 
     // Fetch users from API
     const fetchUsers = async () => {
+      setAuthHeader();
       try {
-        const response = await axios.get(`${API_BASE_URL}/getAllUser`);
+        const response = await axios.get(API_BASE_URL);
         users.value = response.data;
+        console.log("Fetched users:", users.value); // DEBUG
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
       }
     };
 
@@ -388,20 +348,23 @@ export default {
     const filteredUsers = computed(() => {
       let result = [...users.value];
 
+      console.log("Selected role:", selectedRole.value); // DEBUG
+
       // Filter by search query
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
-        result = result.filter(
-          (user) =>
-            user.fullname.toLowerCase().includes(query) ||
-            user.email.toLowerCase().includes(query) ||
-            user.phone_number.includes(query)
+        result = result.filter(user =>
+          user.fullname.toLowerCase().includes(query) ||
+          user.email.toLowerCase().includes(query)
         );
       }
 
       // Filter by role
       if (selectedRole.value) {
-        result = result.filter((user) => user.role_name === selectedRole.value);
+        result = result.filter(user => user.role === selectedRole.value); // Sửa thành 'user.role'
+        console.log("Filtered users by role:", result); // DEBUG
+      } else {
+        console.log("No role selected, showing all users after search filter."); // DEBUG
       }
 
       // Sort users
@@ -410,12 +373,16 @@ export default {
           const valA = a[sortKey.value];
           const valB = b[sortKey.value];
 
-          if (typeof valA === 'string' && typeof valB === 'string') {
-            return sortOrder.value === 'asc'
-              ? valA.localeCompare(valB)
-              : valB.localeCompare(valA);
+          if (key === 'role') { // Sửa logic sắp xếp cho 'role'
+            return sortOrder.value === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          } else if (typeof valA === "string" && typeof valB === "string") {
+            return sortOrder.value === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          } else if (typeof valA === 'number' && typeof valB === 'number') {
+            return sortOrder.value === "asc" ? valA - valB : valB - valA;
+          } else if (valA instanceof Date && valB instanceof Date) {
+            return sortOrder.value === "asc" ? valA.getTime() - valB.getTime() : valB.getTime() - valA.getTime();
           } else {
-            return sortOrder.value === 'asc' ? valA - valB : valB - valA;
+            return 0; // Handle cases where data types are mixed or not comparable
           }
         });
       }
@@ -429,16 +396,9 @@ export default {
       return filteredUsers.value.slice(start, end);
     });
 
-    // Methods
+    //// Methods
     const resetCurrentUser = () => {
-      currentUser.value = {
-        fullname: '',
-        email: '',
-        phone_number: '',
-        password: '',
-        role_name: 'customer',
-        address: '',
-      };
+      currentUser.value = { id: null, fullname: "", email: "", password: "", role: "customer" }; // Sửa thành 'role'
     };
 
     const closeUserModal = () => {
@@ -448,21 +408,18 @@ export default {
     };
 
     const addUser = async () => {
+      setAuthHeader();
       try {
-        // Kiểm tra xem email đã tồn tại hay chưa
-        const existingUser = users.value.find((user) => user.email === currentUser.value.email);
+        const existingUser = users.value.find(user => user.email === currentUser.value.email);
         if (existingUser) {
-          alert('Email đã tồn tại!');
+          alert("Email đã tồn tại!");
           return;
         }
-
-        await axios.post(`${API_BASE_URL}/register`, {
-          ...currentUser.value,
-        });
+        await axios.post(API_BASE_URL, { ...currentUser.value });
         fetchUsers();
         closeUserModal();
       } catch (error) {
-        console.error('Error adding user:', error);
+        console.error("Error adding user:", error);
       }
     };
 
@@ -472,26 +429,59 @@ export default {
     };
 
     const updateUser = async () => {
+      setAuthHeader();
       try {
-        await axios.put(`<span class="math-inline">\{API\_BASE\_URL\}/update/</span>{currentUser.value.id}`, {
-          ...currentUser.value,
-        });
+        const updateData = {
+          email: currentUser.value.email,
+          fullname: currentUser.value.fullname,
+          role: currentUser.value.role, // Sửa thành 'role'
+        };
+
+        // Chỉ gửi password nếu nó được thay đổi
+        if (currentUser.value.password) {
+          updateData.password = currentUser.value.password;
+        }
+
+        // Đảm bảo URL có dấu gạch chéo ở cuối
+        const apiUrlWithSlash = `${API_BASE_URL}/${currentUser.value.id}/`;
+
+        const response = await axios.put(
+          apiUrlWithSlash,
+          updateData
+        );
+
+        console.log("Update User Response:", response.data); // Log the response
         fetchUsers();
         closeUserModal();
       } catch (error) {
-        console.error('Error updating user:', error);
+        console.error("Lỗi khi cập nhật người dùng:", error);
+        if (error.response) {
+          // Server trả về mã lỗi
+          console.error("Dữ liệu lỗi từ Server:", error.response.data);
+          console.error("Trạng thái lỗi từ Server:", error.response.status);
+          console.error("Headers lỗi từ Server:", error.response.headers);
+          alert(
+            `Lỗi khi cập nhật người dùng: ${JSON.stringify(error.response.data)}`
+          ); // Hiển thị thông tin lỗi từ server
+        } else if (error.request) {
+          // Không nhận được phản hồi từ server
+          console.error("Không nhận được phản hồi. Server có thể đang gặp sự cố.");
+          alert("Không thể kết nối đến server. Vui lòng thử lại sau.");
+        } else {
+          // Lỗi khác
+          console.error("Thông báo lỗi:", error.message);
+          alert("Đã xảy ra lỗi không mong muốn.");
+        }
       }
     };
 
     const toggleUserStatus = async (user) => {
+      setAuthHeader();
       try {
-        await axios.put(`<span class="math-inline">\{API\_BASE\_URL\}/update/</span>{user.id}`, {
-          ...user,
-          status: user.status === 'active' ? 'inactive' : 'active',
-        });
+        await axios.put(`${API_BASE_URL}/${user.id}/`, { status: user.status === "active" ? "inactive" : "active" });
         fetchUsers();
       } catch (error) {
-        console.error('Error toggling user status:', error);
+        console.error("Error toggling user status:", error);
       }
     };
 
@@ -501,34 +491,29 @@ export default {
     };
 
     const confirmDelete = async () => {
+      setAuthHeader();
       try {
-        await axios.delete(`<span class="math-inline">\{API\_BASE\_URL\}/delete/</span>{userToDeleteId.value}`);
+        await axios.delete(`${API_BASE_URL}/${userToDeleteId.value}/`);
         fetchUsers();
         showDeleteModal.value = false;
         userToDeleteId.value = null;
       } catch (error) {
-        console.error('Error deleting user:', error);
+        console.error("Error deleting user:", error);
       }
     };
 
     const sortUsers = (key) => {
       if (sortKey.value === key) {
-        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+        sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
       } else {
         sortKey.value = key;
-        sortOrder.value = 'asc';
+        sortOrder.value = "asc";
       }
     };
 
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       return date.toLocaleDateString();
-    };
-
-    const SortIcon = ({ sortKey: currentSortKey, sortOrder: currentSortOrder, column }) => {
-      if (currentSortKey !== column) return null;
-
-      return currentSortOrder === 'asc' ? h(ChevronUp) : h(ChevronDown);
     };
 
     return {
@@ -554,7 +539,15 @@ export default {
       sortOrder,
       sortUsers,
       formatDate,
-      SortIcon,
+      SortIcon: {
+        props: ["sortKey", "sortOrder", "column"],
+        setup(props) {
+          return () => {
+            if (props.sortKey !== props.column) return null;
+            return props.sortOrder === "asc" ? h(ChevronUp) : h(ChevronDown);
+          };
+        },
+      },
     };
   },
 };
