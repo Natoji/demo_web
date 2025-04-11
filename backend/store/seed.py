@@ -1,28 +1,27 @@
 import sys
 import os
 import django
-import random
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-
 django.setup()
 
 from django.contrib.auth import get_user_model
 from store.models import (
-    Brand, Category, Product, Wishlist, Cart, Order,
+    Brand, Category, Product, Wishlist, Cart, CartItem, Order,
     OrderItem, Payment, ShippingInfo, Review
 )
 
 User = get_user_model()
 
-# Xoá dữ liệu cũ (nếu cần)
+# ===== XÓA DỮ LIỆU CŨ =====
 Review.objects.all().delete()
-ShippingInfo.objects.all().delete()
 Payment.objects.all().delete()
 OrderItem.objects.all().delete()
 Order.objects.all().delete()
+ShippingInfo.objects.all().delete()
+CartItem.objects.all().delete()
 Cart.objects.all().delete()
 Wishlist.objects.all().delete()
 Product.objects.all().delete()
@@ -65,27 +64,37 @@ Wishlist.objects.create(user=user1, product=product1)
 Wishlist.objects.create(user=user1, product=product2)
 
 # ===== 5. CART =====
-from store.models import Cart  # import sau nếu lỗi vòng lặp
 cart = Cart.objects.create(user=user1)
+CartItem.objects.create(cart=cart, product=product1, quantity=2)
+CartItem.objects.create(cart=cart, product=product2, quantity=1)
 
 # ===== 6. ORDER =====
-order = Order.objects.create(user=user1, status="processing", total_amount=4599.49)
+order = Order.objects.create(
+    user=user1,
+    status="processing",
+    total_amount=1999.99 + 2599.50  # = 4599.49
+)
 
-# ===== 7. ORDER ITEMS =====
-OrderItem.objects.create(order=order, product=product1, quantity=1, price=1999.99)
-OrderItem.objects.create(order=order, product=product2, quantity=1, price=2599.50)
-
-# ===== 8. PAYMENT =====
-Payment.objects.create(order=order, method="credit_card", amount=4599.49, is_paid=True, paid_at=datetime.now())
-
-# ===== 9. SHIPPING INFO =====
-ShippingInfo.objects.create(
+# ===== 7. SHIPPING INFO
+shipping_info = ShippingInfo.objects.create(
     order=order,
     address="123 Delivery Street",
     city="Hanoi",
     postal_code="100000",
     country="Vietnam",
     phone="123456789"
+)
+
+# ===== 8. ORDER ITEMS =====
+OrderItem.objects.create(order=order, product=product1, quantity=1, price=1999.99)
+OrderItem.objects.create(order=order, product=product2, quantity=1, price=2599.50)
+
+# ===== 9. PAYMENT =====
+Payment.objects.create(
+    order=order,
+    method="credit_card",
+    amount=4599.49,
+    paid_at=datetime.now()
 )
 
 # ===== 10. REVIEW =====

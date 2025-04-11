@@ -1,5 +1,6 @@
 from django.urls import path
 from store.views.auth_views import RegisterView, LogoutView, UserProfileView ,CustomLoginView
+from store.views.cart_views import CartDetailView, AddToCartView, RemoveFromCartView, UpdateCartItemQuantityView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from store.views import (
     user_views, product_views, order_views, orderitem_views,
@@ -40,8 +41,10 @@ urlpatterns = [
     path('order-items/<int:pk>/', orderitem_views.OrderItemRetrieveUpdateDestroyView.as_view(), name='orderitem-detail'),
 
     # Cart
-    path('carts/', cart_views.CartListCreateView.as_view(), name='cart-list-create'),
-    path('carts/<int:pk>/', cart_views.CartRetrieveUpdateDestroyView.as_view(), name='cart-detail'),
+    path('cart/', CartDetailView.as_view(), name='cart-detail'),
+    path('cart/add/', AddToCartView.as_view(), name='add-to-cart'),
+    path('cart/remove/', RemoveFromCartView.as_view(), name='remove-from-cart'),
+    path('cart/update/', UpdateCartItemQuantityView.as_view(), name='update-cart-item'),
 
     # Wishlist
     path('wishlists/', wishlist_views.WishlistListCreateView.as_view(), name='wishlist-list-create'),
