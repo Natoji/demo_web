@@ -78,7 +78,7 @@
                 <h3 class="text-lg font-bold hover:text-rose-600 transition-colors">
                   {{ product.name }}
                 </h3>
-                <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2 py-1 rounded-full">{{ getCategoryName(product.cat_Id) }}</span>
+                <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2 py-1 rounded-full">{{ getCategoryNameForProduct(product.category) }}</span>
               </div>
 
               <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
@@ -126,7 +126,8 @@ export default {
   setup() {
     const searchQuery = ref('');
     const selectedCategory = ref(null);
-    const categories = ref([]);
+    const categories = ref([]); // Giữ nguyên là mảng cho danh sách bộ lọc
+    const productCategories = ref({}); // Object để lưu trữ tên danh mục của sản phẩm
     const products = ref([]);
     const loading = ref(true);
     const error = ref(null);
@@ -153,6 +154,16 @@ export default {
       }
     };
 
+    const fetchCategory = async (categoryId) => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/categories/${categoryId}/`);
+        productCategories.value[categoryId] = response.data.name;
+      } catch (err) {
+        console.error(`Error fetching category ${categoryId}:`, err);
+        productCategories.value[categoryId] = 'Unknown';
+      }
+    };
+
     onMounted(async () => {
       try {
         loading.value = true;
@@ -160,21 +171,23 @@ export default {
 
         const [categoriesResponse, productsResponse] = await Promise.all([
           axios.get('http://localhost:8000/api/categories/', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
           }),
           axios.get('http://localhost:8000/api/products/', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
           }),
         ]);
-        categories.value = categoriesResponse.data;
+        categories.value = categoriesResponse.data; // Giữ nguyên cách lấy danh sách danh mục
         products.value = productsResponse.data.map(product => ({
           ...product,
           price: Number(product.price),
         }));
+
+        // Fetch category name for each product
+        products.value.forEach(product => {
+          if (!productCategories.value[product.category]) {
+            fetchCategory(product.category);
+          }
+        });
+
         await updateCartQuantity();
       } catch (err) {
         error.value = 'Failed to load data. Please try again later.';
@@ -186,7 +199,7 @@ export default {
 
     const filteredProducts = computed(() => {
       return products.value.filter(product => {
-        if (selectedCategory.value && product.cat_Id !== selectedCategory.value) {
+        if (selectedCategory.value && product.category !== selectedCategory.value) {
           return false;
         }
         if (searchQuery.value) {
@@ -205,6 +218,10 @@ export default {
       return category ? category.name : '';
     };
 
+    const getCategoryNameForProduct = (categoryId) => {
+      return productCategories.value[categoryId] || 'Loading...';
+    };
+
     const addToCart = async (product) => {
       try {
         const userId = localStorage.getItem('userId');
@@ -221,13 +238,13 @@ export default {
         });
 
         const cartData = {
-          menuItemId: Number(product.id),
+          product_id: Number(product.id), // Sử dụng product_id theo API mới
           quantity: 1,
         };
 
         console.log('Cart data to send:', cartData);
 
-        const response = await axios.post(`http://localhost:8000/api/carts/${userId}/items/`, cartData, {
+        const response = await axios.post('http://localhost:8000/api/cart/add/', cartData, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -253,6 +270,7 @@ export default {
       categories,
       filteredProducts,
       getCategoryName,
+      getCategoryNameForProduct,
       addToCart,
       loading,
       error,

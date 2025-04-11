@@ -9,12 +9,17 @@
         <div class="md:w-1/2 p-4">
           <div class="relative aspect-square w-full max-w-[500px] max-h-[500px] mx-auto bg-gray-100 rounded-lg overflow-hidden">
             <img
-              v-if="product.img"
-              :src="`${product.img}`"
+              v-if="imageUrl"
+              :src="`${imageUrl}`"
               :alt="product.name"
               class="absolute inset-0 w-full h-full object-contain"
               @error="handleImageError"
             >
+            <div v-else class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+              <svg class="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -23,7 +28,7 @@
             <div>
               <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ product.name }}</h1>
               <span class="inline-block bg-rose-100 text-rose-800 text-sm font-semibold px-3 py-1 rounded-full mb-4">
-                {{ getCategoryName(product.cat_Id) }}
+                {{ getCategoryName(product.category) }}
               </span>
             </div>
             <span class="text-2xl font-bold text-rose-600">${{ Number(product.price).toFixed(2) }}</span>
@@ -110,10 +115,10 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { ShoppingCart, Heart, Star, Minus, Plus, AlertCircle } from 'lucide-vue-next'
-import { menuItemAPI, categoryAPI, cartAPI } from '../services/api'
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { ShoppingCart, Heart, Star, Minus, Plus, AlertCircle } from 'lucide-vue-next';
+import axios from 'axios';
 
 export default {
   name: 'ProductDetail',
@@ -126,85 +131,91 @@ export default {
     AlertCircle
   },
   setup() {
-    const route = useRoute()
-    const productId = parseInt(route.params.id)
+    const route = useRoute();
+    const productId = parseInt(route.params.id);
 
-    const product = ref(null)
-    const loading = ref(true)
-    const quantity = ref(1)
-    const categories = ref([])
+    const product = ref(null);
+    const loading = ref(true);
+    const quantity = ref(1);
+    const categories = ref([]);
+    const imageUrl = ref(null);
 
-    // Function to handle image loading errors
     const handleImageError = (e) => {
-      console.error('Image loading error:', e.target.src)
-      // If there's an error loading the product image, do nothing (don't show placeholder)
-    }
+      console.error('Image loading error:', e.target.src);
+    };
 
     onMounted(async () => {
       try {
-        loading.value = true
-        // Scroll to top of the page
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        loading.value = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Fetch both product and categories data
-        const [productResponse, categoriesResponse] = await Promise.all([
-          menuItemAPI.getById(productId),
-          categoryAPI.getAll()
-        ])
-
-        // Process product data
+        // Fetch product data
+        const productResponse = await axios.get(`http://localhost:8000/api/products/${productId}/`);
         if (productResponse.data) {
           product.value = {
             ...productResponse.data,
             price: Number(productResponse.data.price)
-          }
+          };
+          imageUrl.value = productResponse.data.img; // Directly get image URL
+        } else {
+          product.value = null; // Set product to null if not found
         }
 
-        categories.value = categoriesResponse.data
+        // Fetch categories data (assuming you still need this)
+        const categoriesResponse = await axios.get('http://localhost:8000/api/categories/'); // Replace with your actual API
+        categories.value = categoriesResponse.data;
       } catch (error) {
-        console.error('Error fetching product:', error)
+        console.error('Error fetching product or categories:', error);
+        product.value = null; // Set product to null on error
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    })
+    });
 
     const getCategoryName = (categoryId) => {
-      const category = categories.value.find(c => c.id === categoryId)
-      return category ? category.name : ''
-    }
+      const category = categories.value.find(c => c.id === categoryId);
+      return category ? category.name : '';
+    };
 
     const addToCart = async () => {
-      if (!product.value) return
+  if (!product.value) return;
 
-      try {
-        // Lấy thông tin user từ localStorage
-        const user = JSON.parse(localStorage.getItem('user'))
-        if (!user) {
-          window.location.href = '/login'
-          return
-        }
-
-        // Thêm sản phẩm vào giỏ hàng qua API
-        const response = await cartAPI.addToCart(user.id, {
-          menuItemId: parseInt(product.value.id),
-          quantity: parseInt(quantity.value)
-        })
-
-        if (response.data) {
-          // Hiển thị thông báo thành công
-          alert(`${quantity.value} ${product.value.name}${quantity.value > 1 ? 's' : ''} đã được thêm vào giỏ hàng!`)
-
-          // Reset quantity
-          quantity.value = 1
-
-          // Dispatch custom event to notify other components
-          window.dispatchEvent(new Event('cartUpdated'))
-        }
-      } catch (err) {
-        console.error('Error adding to cart:', err)
-        alert('Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau.')
-      }
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const accessToken = localStorage.getItem('access_token'); // Lấy access token từ localStorage
+    if (!user || !accessToken) {
+      window.location.href = '/login';
+      return;
     }
+
+    const response = await axios.post(
+      'http://localhost:8000/api/cart/add/',
+      {
+        user_id: user.id, // Hoặc cách backend của bạn xác định user
+        product_id: parseInt(product.value.id),
+        quantity: parseInt(quantity.value),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Thêm header Authorization với token
+        },
+      }
+    );
+
+    if (response.data) {
+      alert(
+        `${quantity.value} ${product.value.name}${
+          quantity.value > 1 ? 's' : ''
+        } đã được thêm vào giỏ hàng!`
+      );
+      quantity.value = 1;
+      window.dispatchEvent(new Event('cartUpdated'));
+    }
+  } catch (err) {
+    console.error('Error adding to cart:', err);
+    alert('Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau.');
+  }
+};
 
     return {
       product,
@@ -212,8 +223,9 @@ export default {
       quantity,
       getCategoryName,
       addToCart,
-      handleImageError
-    }
+      handleImageError,
+      imageUrl
+    };
   }
-}
+};
 </script>

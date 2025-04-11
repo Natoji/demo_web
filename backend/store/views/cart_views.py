@@ -77,3 +77,13 @@ class UpdateCartItemQuantityView(APIView):
             return Response({'message': 'Quantity updated successfully'}, status=200)
         except (Cart.DoesNotExist, CartItem.DoesNotExist):
             return Response({'error': 'Item not found in cart'}, status=404)
+class ClearCartView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        try:
+            cart = Cart.objects.get(user=request.user)
+            cart.items.all().delete()
+            return Response({'message': 'Cart cleared successfully'}, status=200)
+        except Cart.DoesNotExist:
+            return Response({'error': 'Cart not found'}, status=404)
