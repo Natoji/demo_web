@@ -46,6 +46,7 @@ product1 = Product.objects.create(
     description="A sparkling diamond ring.",
     price=1999.99,
     stock=10,
+    img = "https://culacstudio.com/wp-content/uploads/2019/06/p-trang-suc-4.jpg",
     brand=brand1,
     category=cat1
 )
@@ -55,6 +56,7 @@ product2 = Product.objects.create(
     description="24K pure gold necklace.",
     price=2599.50,
     stock=5,
+    img = "https://culacstudio.com/wp-content/uploads/2019/06/p-trang-suc-4.jpg",
     brand=brand2,
     category=cat2
 )
