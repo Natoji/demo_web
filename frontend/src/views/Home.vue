@@ -70,7 +70,6 @@
               class="w-full h-48 object-cover hover:opacity-90 transition-opacity"
               @error="handleImageError"
             >
-            
           </router-link>
 
           <div class="p-4">
@@ -112,9 +111,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
-import { Search, ShoppingCart, Eye, ShoppingBag } from 'lucide-vue-next'
-import { categoryAPI, menuItemAPI, cartAPI } from '../services/api'
+import { ref, computed, onMounted } from 'vue';
+import { Search, ShoppingCart, Eye, ShoppingBag } from 'lucide-vue-next';
+import axios from 'axios';
 
 export default {
   name: 'Home',
@@ -125,125 +124,128 @@ export default {
     ShoppingBag
   },
   setup() {
-    const searchQuery = ref('')
-    const selectedCategory = ref(null)
-    const categories = ref([])
-    const products = ref([])
-    const loading = ref(true)
-    const error = ref(null)
-    const cartQuantity = ref(0)
+    const searchQuery = ref('');
+    const selectedCategory = ref(null);
+    const categories = ref([]);
+    const products = ref([]);
+    const loading = ref(true);
+    const error = ref(null);
+    const cartQuantity = ref(0);
 
-    // Function to handle image loading errors
     const handleImageError = (e) => {
-      console.error('Image loading error:', e.target.src)
-      // If there's an error loading the product image, keep the existing src (or show browser's error)
-    }
+      console.error('Image loading error:', e.target.src);
+    };
 
-    // Function to update cart quantity
     const updateCartQuantity = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem('user'))
-        if (!user) return
+        const userId = localStorage.getItem('userId');
+        const accessToken = localStorage.getItem('access_token');
+        if (!userId || !accessToken) return;
 
-        const response = await cartAPI.getCartCount(user.id)
-        cartQuantity.value = response.data.count
+        const response = await axios.get(`http://localhost:8000/api/carts/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        cartQuantity.value = response.data.cartItems.reduce((sum, item) => sum + item.quantity, 0);
       } catch (err) {
-        console.error('Error updating cart quantity:', err)
+        console.error('Error updating cart quantity:', err);
       }
-    }
+    };
 
-    // Fetch categories and products when component mounts
     onMounted(async () => {
       try {
-        loading.value = true
+        loading.value = true;
+        const accessToken = localStorage.getItem('access_token');
+
         const [categoriesResponse, productsResponse] = await Promise.all([
-          categoryAPI.getAll(),
-          menuItemAPI.getAll()
-        ])
-        categories.value = categoriesResponse.data
+          axios.get('http://localhost:8000/api/categories/', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+          axios.get('http://localhost:8000/api/products/', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+        ]);
+        categories.value = categoriesResponse.data;
         products.value = productsResponse.data.map(product => ({
           ...product,
-          price: Number(product.price)
-        }))
-        // Initialize cart quantity
-        updateCartQuantity()
+          price: Number(product.price),
+        }));
+        await updateCartQuantity();
       } catch (err) {
-        error.value = 'Failed to load data. Please try again later.'
-        console.error('Error loading data:', err)
+        error.value = 'Failed to load data. Please try again later.';
+        console.error('Error loading data:', err);
       } finally {
-        loading.value = false
+        loading.value = false;
       }
-    })
+    });
 
     const filteredProducts = computed(() => {
       return products.value.filter(product => {
-        // Filter by category if selected
         if (selectedCategory.value && product.cat_Id !== selectedCategory.value) {
-          return false
+          return false;
         }
-
-        // Filter by search query
         if (searchQuery.value) {
-          const query = searchQuery.value.toLowerCase()
+          const query = searchQuery.value.toLowerCase();
           return (
             product.name.toLowerCase().includes(query) ||
             product.description?.toLowerCase().includes(query)
-          )
+          );
         }
-
-        return true
-      })
-    })
+        return true;
+      });
+    });
 
     const getCategoryName = (categoryId) => {
-      const category = categories.value.find(c => c.id === categoryId)
-      return category ? category.name : ''
-    }
+      const category = categories.value.find(c => c.id === categoryId);
+      return category ? category.name : '';
+    };
 
     const addToCart = async (product) => {
       try {
-        // Lấy thông tin user từ localStorage
-        const user = JSON.parse(localStorage.getItem('user'))
-        if (!user) {
-          window.location.href = '/login'
-          return
+        const userId = localStorage.getItem('userId');
+        const accessToken = localStorage.getItem('access_token');
+        if (!userId || !accessToken) {
+          window.location.href = '/login';
+          return;
         }
 
-        // Log thông tin sản phẩm trước khi thêm vào giỏ hàng
         console.log('Product to add:', {
           id: product.id,
           name: product.name,
-          price: product.price
+          price: product.price,
         });
 
         const cartData = {
           menuItemId: Number(product.id),
-          quantity: 1
+          quantity: 1,
         };
 
         console.log('Cart data to send:', cartData);
 
-        // Thêm sản phẩm vào giỏ hàng qua API
-        const response = await cartAPI.addToCart(user.id, cartData);
+        const response = await axios.post(`http://localhost:8000/api/carts/${userId}/items/`, cartData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         if (response && response.data) {
-          // Hiển thị thông báo thành công
-          alert(`${product.name} đã được thêm vào giỏ hàng!`)
-
-          // Cập nhật số lượng giỏ hàng
+          alert(`${product.name} đã được thêm vào giỏ hàng!`);
           await updateCartQuantity();
-
-          // Dispatch custom event to notify other components
-          window.dispatchEvent(new Event('cartUpdated'))
+          window.dispatchEvent(new Event('cartUpdated'));
         }
       } catch (err) {
-        console.error('Error adding to cart:', err)
+        console.error('Error adding to cart:', err);
         if (err.response) {
           console.error('Error response:', err.response.data);
         }
-        alert('Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau.')
+        alert('Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau.');
       }
-    }
+    };
 
     return {
       searchQuery,
@@ -255,8 +257,8 @@ export default {
       loading,
       error,
       cartQuantity,
-      handleImageError
-    }
-  }
-}
+      handleImageError,
+    };
+  },
+};
 </script>
