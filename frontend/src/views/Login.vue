@@ -85,7 +85,7 @@ export default {
       });
 
       const { refresh, access, user } = response.data;
-
+        //localStorage.setItem('userCurrent',JSON.stringify(response.data.user))
         localStorage.setItem('refresh_token', refresh);
         localStorage.setItem('access_token', access);
         localStorage.setItem('userId', user.id);
