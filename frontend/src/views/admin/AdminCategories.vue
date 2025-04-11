@@ -294,9 +294,9 @@ export default {
     };
 
     const updateCategory = async () => {
-      setAuthHeader();
       try {
-        await axios.put(`<span class="math-inline">\{import\.meta\.env\.VITE\_API\_DOMAIN\_SERVER\}/api/categories/</span>{currentCategory.value.id}/`, {
+        await axios.put(`${import.meta.env.VITE_API_DOMAIN_SERVER}/api/categories/${currentCategory.value.id}/`
+        , {
           name: currentCategory.value.name,
           description: currentCategory.value.description,
           image: currentCategory.value.image,
