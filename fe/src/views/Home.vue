@@ -1,10 +1,21 @@
 <template>
   <div>
-    <div class="relative bg-orange-500 text-white py-16">
-      <div class="container mx-auto px-4 flex flex-col items-center text-center">
+    <div
+      class="relative bg-orange-500 text-white py-16"
+      style="
+        background-image: url('https://t4.ftcdn.net/jpg/04/17/20/73/360_F_417207342_G7LYJqMP12em9M6szV1rEaUEGuVwBEYH.jpg');
+        background-size: cover;
+        background-position: center;
+      "
+    >
+      <div class="container mx-auto px-4 flex flex-col items-center text-center relative z-10">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">Delicious Food Delivered to Your Door</h1>
-        <p class="text-xl mb-8 max-w-2xl">Explore our menu of fresh, tasty dishes prepared by expert chefs and delivered right to your doorstep.</p>
-        <button class="bg-white text-orange-600 font-bold py-3 px-8 rounded-full hover:bg-orange-100 transition duration-300">
+        <p class="text-xl mb-8 max-w-2xl">
+          Explore our menu of fresh, tasty dishes prepared by expert chefs and delivered right to your doorstep.
+        </p>
+        <button
+          class="bg-white text-orange-600 font-bold py-3 px-8 rounded-full hover:bg-orange-100 transition duration-300"
+        >
           Order Now
         </button>
       </div>
@@ -18,7 +29,12 @@
     <div v-else-if="error" class="container mx-auto px-4 py-8 text-center">
       <div class="text-red-600 mb-4">
         <svg class="h-12 w-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
         </svg>
       </div>
       <p class="text-gray-600">{{ error }}</p>
@@ -51,7 +67,7 @@
             v-model="searchQuery"
             placeholder="Search for food..."
             class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500"
-          >
+          />
           <Search class="absolute right-3 text-gray-500 h-5 w-5" />
         </div>
       </div>
@@ -69,7 +85,7 @@
               :alt="product.name"
               class="w-full h-48 object-cover hover:opacity-90 transition-opacity"
               @error="handleImageError"
-            >
+            />
           </router-link>
 
           <div class="p-4">
@@ -78,7 +94,9 @@
                 <h3 class="text-lg font-bold hover:text-orange-600 transition-colors">
                   {{ product.name }}
                 </h3>
-                <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded-full">{{ getCategoryNameForProduct(product.category) }}</span>
+                <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded-full">{{
+                  getCategoryNameForProduct(product.category)
+                }}</span>
               </div>
 
               <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
@@ -121,7 +139,7 @@ export default {
     Search,
     ShoppingCart,
     Eye,
-    ShoppingBag
+    ShoppingBag,
   },
   setup() {
     const searchQuery = ref('');
@@ -170,19 +188,17 @@ export default {
         const accessToken = localStorage.getItem('access_token');
 
         const [categoriesResponse, productsResponse] = await Promise.all([
-          axios.get('https://demo-web-m8jr.onrender.com/api/categories/', {
-          }),
-          axios.get('https://demo-web-m8jr.onrender.com/api/products/', {
-          }),
+          axios.get('https://demo-web-m8jr.onrender.com/api/categories/', {}),
+          axios.get('https://demo-web-m8jr.onrender.com/api/products/', {}),
         ]);
         categories.value = categoriesResponse.data; // Giữ nguyên cách lấy danh sách danh mục
-        products.value = productsResponse.data.map(product => ({
+        products.value = productsResponse.data.map((product) => ({
           ...product,
           price: Number(product.price),
         }));
 
         // Fetch category name for each product
-        products.value.forEach(product => {
+        products.value.forEach((product) => {
           if (!productCategories.value[product.category]) {
             fetchCategory(product.category);
           }
@@ -198,23 +214,20 @@ export default {
     });
 
     const filteredProducts = computed(() => {
-      return products.value.filter(product => {
+      return products.value.filter((product) => {
         if (selectedCategory.value && product.category !== selectedCategory.value) {
           return false;
         }
         if (searchQuery.value) {
           const query = searchQuery.value.toLowerCase();
-          return (
-            product.name.toLowerCase().includes(query) ||
-            product.description?.toLowerCase().includes(query)
-          );
+          return product.name.toLowerCase().includes(query) || product.description?.toLowerCase().includes(query);
         }
         return true;
       });
     });
 
     const getCategoryName = (categoryId) => {
-      const category = categories.value.find(c => c.id === categoryId);
+      const category = categories.value.find((c) => c.id === categoryId);
       return category ? category.name : '';
     };
 
