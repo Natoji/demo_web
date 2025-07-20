@@ -143,7 +143,7 @@ export default {
         const accessToken = localStorage.getItem('access_token');
         if (!userId || !accessToken) return;
 
-        const response = await axios.get(`http://localhost:8000/api/carts/${userId}`, {
+        const response = await axios.get(`https://demo-web-m8jr.onrender.com/api/carts/${userId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -156,7 +156,7 @@ export default {
 
     const fetchCategory = async (categoryId) => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/categories/${categoryId}/`);
+        const response = await axios.get(`https://demo-web-m8jr.onrender.com/api/categories/${categoryId}/`);
         productCategories.value[categoryId] = response.data.name;
       } catch (err) {
         console.error(`Error fetching category ${categoryId}:`, err);
@@ -170,9 +170,9 @@ export default {
         const accessToken = localStorage.getItem('access_token');
 
         const [categoriesResponse, productsResponse] = await Promise.all([
-          axios.get('http://localhost:8000/api/categories/', {
+          axios.get('https://demo-web-m8jr.onrender.com/api/categories/', {
           }),
-          axios.get('http://localhost:8000/api/products/', {
+          axios.get('https://demo-web-m8jr.onrender.com/api/products/', {
           }),
         ]);
         categories.value = categoriesResponse.data; // Giữ nguyên cách lấy danh sách danh mục
@@ -244,7 +244,7 @@ export default {
 
         console.log('Cart data to send:', cartData);
 
-        const response = await axios.post('http://localhost:8000/api/cart/add/', cartData, {
+        const response = await axios.post('https://demo-web-m8jr.onrender.com/api/cart/add/', cartData, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

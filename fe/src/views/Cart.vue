@@ -158,7 +158,7 @@ export default {
     const loadCart = async () => {
       try {
         loading.value = true;
-        const response = await axios.get('http://localhost:8000/api/cart/', {
+        const response = await axios.get('https://demo-web-m8jr.onrender.com/api/cart/', {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -213,7 +213,7 @@ export default {
 
       try {
         console.log('Updating quantity for product:', productId, 'to:', newQuantity);
-        const response = await axios.post('http://localhost:8000/api/cart/update/', {
+        const response = await axios.post('https://demo-web-m8jr.onrender.com/api/cart/update/', {
           product_id: productId,
           quantity: newQuantity
         }, {
@@ -238,7 +238,7 @@ export default {
     const removeItem = async (productId) => {
       try {
         console.log('Removing product:', productId);
-        const response = await axios.post('http://localhost:8000/api/cart/remove/', {
+        const response = await axios.post('https://demo-web-m8jr.onrender.com/api/cart/remove/', {
           product_id: productId
         }, {
           headers: {
@@ -263,7 +263,7 @@ export default {
       if (confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?')) {
         try {
           console.log('Clearing cart for user:', user.id);
-          const response = await axios.post('http://localhost:8000/api/cart/clear/', {}, { // Assuming clear cart API doesn't require body
+          const response = await axios.post('https://demo-web-m8jr.onrender.com/api/cart/clear/', {}, { // Assuming clear cart API doesn't require body
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },

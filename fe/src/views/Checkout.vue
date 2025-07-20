@@ -215,10 +215,10 @@ export default {
           Authorization: `Bearer ${token}`,
         };
 
-        const userResponse = await axios.get(`http://localhost:8000/api/users/${userId}`, { headers });
+        const userResponse = await axios.get(`https://demo-web-m8jr.onrender.com/api/users/${userId}`, { headers });
         user.value = userResponse.data;
 
-        const cartResponse = await axios.get(`http://localhost:8000/api/cart/`, { headers });
+        const cartResponse = await axios.get(`https://demo-web-m8jr.onrender.com/api/cart/`, { headers });
         console.log('Dữ liệu giỏ hàng:', cartResponse.data);
 
         // Kiểm tra và truy cập đúng mảng dữ liệu giỏ hàng
@@ -294,7 +294,7 @@ export default {
           total_amount: total.value,
           status: 'pending',
         };
-        const orderResponse = await axios.post('http://localhost:8000/api/orders/', orderData, { headers });
+        const orderResponse = await axios.post('https://demo-web-m8jr.onrender.com/api/orders/', orderData, { headers });
         const orderId = orderResponse.data.id;
         console.log('Đã tạo đơn hàng:', orderResponse.data);
 
@@ -307,7 +307,7 @@ export default {
               quantity: item.quantity,
               price: item.price,
             };
-            await axios.post('http://localhost:8000/api/order-items/', orderItemData, { headers });
+            await axios.post('https://demo-web-m8jr.onrender.com/api/order-items/', orderItemData, { headers });
             console.log('Đã tạo mục đơn hàng:', orderItemData);
           }
 
@@ -318,13 +318,13 @@ export default {
             amount: total.value,
             is_paid: form.value.paymentMethod === 'cashOnDelivery' ? false : true, // Mặc định là chưa thanh toán nếu COD
           };
-          const paymentResponse = await axios.post('http://localhost:8000/api/payments/', paymentData, { headers });
+          const paymentResponse = await axios.post('https://demo-web-m8jr.onrender.com/api/payments/', paymentData, { headers });
           console.log('Đã tạo thanh toán:', paymentResponse.data);
 
           // 4. Xóa giỏ hàng
-          // await axios.post('http://localhost:8000/api/cart/clear/', { headers });
+          // await axios.post('https://demo-web-m8jr.onrender.com/api/cart/clear/', { headers });
           // console.log('Đã xóa giỏ hàng');
-          await axios.post('http://localhost:8000/api/cart/clear/', {}, {
+          await axios.post('https://demo-web-m8jr.onrender.com/api/cart/clear/', {}, {
             headers: {
               Authorization: `Bearer ${token}`, // hoặc headers bạn muốn
             }

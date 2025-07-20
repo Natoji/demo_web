@@ -150,7 +150,7 @@ export default {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Fetch product data
-        const productResponse = await axios.get(`http://localhost:8000/api/products/${productId}/`);
+        const productResponse = await axios.get(`https://demo-web-m8jr.onrender.com/api/products/${productId}/`);
         if (productResponse.data) {
           product.value = {
             ...productResponse.data,
@@ -162,7 +162,7 @@ export default {
         }
 
         // Fetch categories data (assuming you still need this)
-        const categoriesResponse = await axios.get('http://localhost:8000/api/categories/'); // Replace with your actual API
+        const categoriesResponse = await axios.get('https://demo-web-m8jr.onrender.com/api/categories/'); // Replace with your actual API
         categories.value = categoriesResponse.data;
       } catch (error) {
         console.error('Error fetching product or categories:', error);
@@ -189,7 +189,7 @@ export default {
     }
 
     const response = await axios.post(
-      'http://localhost:8000/api/cart/add/',
+      'https://demo-web-m8jr.onrender.com/api/cart/add/',
       {
         user_id: user.id, // Hoặc cách backend của bạn xác định user
         product_id: parseInt(product.value.id),
