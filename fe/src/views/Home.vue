@@ -1,20 +1,14 @@
 <template>
   <div>
     <div
-      class="relative bg-orange-500 text-white"
+      class="relative bg-orange-500 text-white py-16"
       style="
         background-image: url('https://t4.ftcdn.net/jpg/04/17/20/73/360_F_417207342_G7LYJqMP12em9M6szV1rEaUEGuVwBEYH.jpg');
-        background-size: cover; /* Đảm bảo ảnh che phủ toàn bộ div */
-        background-position: center; /* Căn giữa ảnh */
-        width: 100%; /* Đảm bảo div chiếm toàn bộ chiều rộng */
-        height: calc(100vw / 3.07); /* Tính toán chiều cao dựa trên tỷ lệ ảnh (8804/2861 ≈ 3.07) */
+        background-size: cover;
+        background-position: center;
       "
     >
-      <div class="absolute inset-0 bg-black opacity-30"></div>
-
-      <div
-        class="container mx-auto px-4 flex flex-col items-center text-center absolute inset-0 justify-center z-10"
-      >
+      <div class="container mx-auto px-4 flex flex-col items-center text-center relative z-10">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">Delicious Food Delivered to Your Door</h1>
         <p class="text-xl mb-8 max-w-2xl">
           Explore our menu of fresh, tasty dishes prepared by expert chefs and delivered right to your doorstep.
@@ -150,8 +144,8 @@ export default {
   setup() {
     const searchQuery = ref('');
     const selectedCategory = ref(null);
-    const categories = ref([]);
-    const productCategories = ref({});
+    const categories = ref([]); // Giữ nguyên là mảng cho danh sách bộ lọc
+    const productCategories = ref({}); // Object để lưu trữ tên danh mục của sản phẩm
     const products = ref([]);
     const loading = ref(true);
     const error = ref(null);
@@ -197,12 +191,13 @@ export default {
           axios.get('https://demo-web-m8jr.onrender.com/api/categories/', {}),
           axios.get('https://demo-web-m8jr.onrender.com/api/products/', {}),
         ]);
-        categories.value = categoriesResponse.data;
-        products.value = products.data.map((product) => ({
+        categories.value = categoriesResponse.data; // Giữ nguyên cách lấy danh sách danh mục
+        products.value = productsResponse.data.map((product) => ({
           ...product,
           price: Number(product.price),
         }));
 
+        // Fetch category name for each product
         products.value.forEach((product) => {
           if (!productCategories.value[product.category]) {
             fetchCategory(product.category);
@@ -256,7 +251,7 @@ export default {
         });
 
         const cartData = {
-          product_id: Number(product.id),
+          product_id: Number(product.id), // Sử dụng product_id theo API mới
           quantity: 1,
         };
 
