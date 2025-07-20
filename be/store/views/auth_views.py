@@ -83,12 +83,11 @@ class UserProfileView(generics.RetrieveAPIView):
 class CustomLoginView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except Exception as e:
+
+        if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
-        user = serializer.user
+        user = self.get_user(serializer.validated_data)
         refresh = serializer.validated_data['refresh']
         access = serializer.validated_data['access']
         user_serializer = UserSerializer(user)
@@ -98,3 +97,14 @@ class CustomLoginView(TokenObtainPairView):
             'access': str(access),
             'user': user_serializer.data
         }, status=status.HTTP_200_OK)
+
+    def get_user(self, validated_data):
+        return self.user_from_token(validated_data['access'])
+
+    def user_from_token(self, token):
+        from rest_framework_simplejwt.tokens import AccessToken
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        access_token = AccessToken(token)
+        user_id = access_token['user_id']
+        return User.objects.get(id=user_id)
