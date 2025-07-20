@@ -14,6 +14,7 @@
           Explore our menu of fresh, tasty dishes prepared by expert chefs and delivered right to your doorstep.
         </p>
         <button
+          @click="scrollToProducts"
           class="bg-white text-orange-600 font-bold py-3 px-8 rounded-full hover:bg-orange-100 transition duration-300"
         >
           Order Now
@@ -40,7 +41,7 @@
       <p class="text-gray-600">{{ error }}</p>
     </div>
 
-    <div v-else class="container mx-auto px-4 py-8">
+    <div v-else id="product-section" class="container mx-auto px-4 py-8">
       <div class="flex flex-wrap justify-center gap-4 mb-8">
         <button
           @click="selectedCategory = null"
@@ -144,8 +145,8 @@ export default {
   setup() {
     const searchQuery = ref('');
     const selectedCategory = ref(null);
-    const categories = ref([]); // Giữ nguyên là mảng cho danh sách bộ lọc
-    const productCategories = ref({}); // Object để lưu trữ tên danh mục của sản phẩm
+    const categories = ref([]);
+    const productCategories = ref({});
     const products = ref([]);
     const loading = ref(true);
     const error = ref(null);
@@ -191,13 +192,12 @@ export default {
           axios.get('https://demo-web-m8jr.onrender.com/api/categories/', {}),
           axios.get('https://demo-web-m8jr.onrender.com/api/products/', {}),
         ]);
-        categories.value = categoriesResponse.data; // Giữ nguyên cách lấy danh sách danh mục
+        categories.value = categoriesResponse.data;
         products.value = productsResponse.data.map((product) => ({
           ...product,
           price: Number(product.price),
         }));
 
-        // Fetch category name for each product
         products.value.forEach((product) => {
           if (!productCategories.value[product.category]) {
             fetchCategory(product.category);
@@ -251,7 +251,7 @@ export default {
         });
 
         const cartData = {
-          product_id: Number(product.id), // Sử dụng product_id theo API mới
+          product_id: Number(product.id),
           quantity: 1,
         };
 
@@ -277,6 +277,14 @@ export default {
       }
     };
 
+    // Phương thức mới để cuộn xuống phần sản phẩm
+    const scrollToProducts = () => {
+      const productSection = document.getElementById('product-section');
+      if (productSection) {
+        productSection.scrollIntoView({ behavior: 'smooth' }); // Cuộn mượt mà
+      }
+    };
+
     return {
       searchQuery,
       selectedCategory,
@@ -289,6 +297,7 @@ export default {
       error,
       cartQuantity,
       handleImageError,
+      scrollToProducts, // Đảm bảo phương thức này được trả về
     };
   },
 };
