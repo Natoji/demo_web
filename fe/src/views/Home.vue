@@ -84,7 +84,7 @@
               <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
 
               <div class="flex justify-between items-center">
-                <span class="text-orange-600 font-bold">{{ Number(product.price).toFixed(2) }} VNĐ</span>
+                <span class="text-orange-600 font-bold">{{ String(Math.floor(product.price)).toLocaleString('en-US').replace(/,/g, '.') }} VNĐ</span>
               </div>
             </router-link>
 
