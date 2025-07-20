@@ -14,7 +14,7 @@
               id="search"
               v-model="searchQuery"
               placeholder="Search users..."
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
@@ -25,7 +25,7 @@
           <select
             id="role"
             v-model="selectedRole"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">All Roles</option>
             <option value="admin">Admin</option>
@@ -166,7 +166,7 @@
               type="text"
               id="userName"
               v-model="currentUser.fullname"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -179,7 +179,7 @@
               type="email"
               id="userEmail"
               v-model="currentUser.email"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -192,7 +192,7 @@
               type="password"
               id="userPassword"
               v-model="currentUser.password"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -204,7 +204,7 @@
               type="password"
               id="userPassword"
               v-model="currentUser.password"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
@@ -215,7 +215,7 @@
             <select
               id="userRole"
               v-model="currentUser.role"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             >
               <option value="admin">Admin</option>
@@ -231,7 +231,7 @@
             >
               Cancel
             </button>
-            <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700">
+            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
               {{ showEditUserModal ? "Update" : "Add" }}
             </button>
           </div>

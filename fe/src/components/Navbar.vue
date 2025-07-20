@@ -5,13 +5,13 @@
 
       <div class="flex items-center space-x-6">
         <template v-if="user">
-          <router-link to="/" class="hover:text-rose-200 transition-colors">Home</router-link>
+          <router-link to="/" class="hover:text-orange-200 transition-colors">Home</router-link>
           <template v-if="user.user.role !== 'admin'">
-            <router-link to="/contact" class="hover:text-rose-200 transition-colors">Liên hệ</router-link>
-            <router-link to="/cart" class="hover:text-rose-200 relative transition-colors">
+            <router-link to="/contact" class="hover:text-orange-200 transition-colors">Liên hệ</router-link>
+            <router-link to="/cart" class="hover:text-orange-200 relative transition-colors">
               <ShoppingCart class="h-6 w-6" />
               <span v-if="cartCount > 0"
-                class="absolute -top-2 -right-2 bg-yellow-400 text-rose-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                class="absolute -top-2 -right-2 bg-yellow-400 text-orange-700 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                 {{ cartCount }}
               </span>
             </router-link>
@@ -19,7 +19,7 @@
 
           <div class="relative">
             <button @click="isUserMenuOpen = !isUserMenuOpen"
-              class="flex items-center hover:text-rose-200 transition-colors focus:outline-none">
+              class="flex items-center hover:text-orange-200 transition-colors focus:outline-none">
               <User class="h-5 w-5 mr-1" />
               {{ user.user.fullname }}
               <ChevronDown class="h-4 w-4 ml-1" :class="{ 'transform rotate-180': isUserMenuOpen }" />
@@ -29,14 +29,14 @@
               class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-10"
               @mouseleave="isUserMenuOpen = false">
               <template v-if="user.user.role !== 'admin'">
-                <router-link to="/orders" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/orders" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <ClipboardList class="h-4 w-4 mr-2" />
                     My Orders
                   </div>
                 </router-link>
-                <router-link to="/profile" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/profile" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <User class="h-4 w-4 mr-2" />
@@ -45,35 +45,35 @@
                 </router-link>
               </template>
               <template v-if="user.user.role === 'admin'">
-                <router-link to="/admin/dashboard" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/admin/dashboard" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <LayoutDashboard class="h-4 w-4 mr-2" />
                     Dashboard
                   </div>
                 </router-link>
-                <router-link to="/admin/products" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/admin/products" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <Package class="h-4 w-4 mr-2" />
                     Manage Products
                   </div>
                 </router-link>
-                <router-link to="/admin/orders" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/admin/orders" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <ClipboardList class="h-4 w-4 mr-2" />
                     Manage Orders
                   </div>
                 </router-link>
-                <router-link to="/admin/users" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/admin/users" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <Users class="h-4 w-4 mr-2" />
                     Manage Users
                   </div>
                 </router-link>
-                <router-link to="/admin/adminCategories" class="block px-4 py-2 hover:bg-rose-100 transition-colors"
+                <router-link to="/admin/adminCategories" class="block px-4 py-2 hover:bg-orange-100 transition-colors"
                   @click="isUserMenuOpen = false">
                   <div class="flex items-center">
                     <Tags class="h-4 w-4 mr-2" />
@@ -82,7 +82,7 @@
                 </router-link>
                 <div class="border-t border-gray-200 my-1"></div>
               </template>
-              <button @click="handleLogout" class="block w-full text-left px-4 py-2 hover:bg-rose-100 transition-colors">
+              <button @click="handleLogout" class="block w-full text-left px-4 py-2 hover:bg-orange-100 transition-colors">
                 <div class="flex items-center text-red-600">
                   <LogOut class="h-4 w-4 mr-2" />
                   Logout
@@ -93,8 +93,8 @@
         </template>
 
         <template v-else>
-          <router-link to="/login" class="hover:text-rose-200 transition-colors">Login</router-link>
-          <router-link to="/register" class="hover:text-rose-200 transition-colors">Register</router-link>
+          <router-link to="/login" class="hover:text-orange-200 transition-colors">Login</router-link>
+          <router-link to="/register" class="hover:text-orange-200 transition-colors">Register</router-link>
         </template>
       </div>
     </div>

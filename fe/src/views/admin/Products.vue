@@ -4,7 +4,7 @@
       <h1 class="text-2xl font-bold">Manage Products</h1>
       <button
         @click="openAddProductModal"
-        class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center"
+        class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 flex items-center"
       >
         <Plus class="h-5 w-5 mr-1" />
         Add Product
@@ -21,7 +21,7 @@
               id="search"
               v-model="searchQuery"
               placeholder="Search products..."
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
@@ -32,7 +32,7 @@
           <select
             id="category"
             v-model="selectedCategory"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">All Categories</option>
             <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -46,7 +46,7 @@
           <select
             id="sort"
             v-model="sortBy"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="name">Name</option>
             <option value="price">Price</option>
@@ -80,7 +80,7 @@
               </td>
               <td class="px-6 py-4 text-sm text-gray-500">{{ product.description }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-rose-100 text-rose-800">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
                   {{ getCategoryName(product.category) }}
                 </span>
               </td>
@@ -127,7 +127,7 @@
               type="text"
               id="productName"
               v-model="currentProduct.name"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -138,7 +138,7 @@
               id="productDescription"
               v-model="currentProduct.description"
               rows="3"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             ></textarea>
           </div>
 
@@ -150,7 +150,7 @@
               v-model="currentProduct.price"
               step="0.01"
               min="0"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -160,7 +160,7 @@
             <select
               id="productCategory"
               v-model="currentProduct.category"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             >
               <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -175,7 +175,7 @@
               type="text"
               id="productImage"
               v-model="currentProduct.img"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -188,7 +188,7 @@
             >
               Cancel
             </button>
-            <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700">
+            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
               {{ showEditProductModal ? 'Update' : 'Add' }}
             </button>
           </div>

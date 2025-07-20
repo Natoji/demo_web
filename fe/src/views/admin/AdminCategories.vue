@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Manage Categories</h1>
       <button @click="openAddCategoryModal"
-        class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center">
+        class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 flex items-center">
         <Plus class="h-5 w-5 mr-1" />
         Add Category
       </button>
@@ -15,7 +15,7 @@
           <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
           <div class="relative">
             <input type="text" id="search" v-model="searchQuery" placeholder="Search categories..."
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
         </div>
@@ -112,20 +112,20 @@
           <div class="mb-4">
             <label for="categoryName" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
             <input type="text" id="categoryName" v-model="currentCategory.name"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
           </div>
 
           <div class="mb-4">
             <label for="categoryDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea id="categoryDescription" v-model="currentCategory.description" rows="3"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
           </div>
 
           <div class="mb-4">
             <label for="categoryImage" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
             <input type="text" id="categoryImage" v-model="currentCategory.image"
               placeholder="https://example.com/image.jpg"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
             <p class="mt-1 text-xs text-gray-500">Leave empty to use default icon</p>
           </div>
 
@@ -134,7 +134,7 @@
               class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700">
+            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
               {{ showEditCategoryModal ? 'Update' : 'Add' }}
             </button>
           </div>

@@ -3,13 +3,13 @@
     <h1 class="text-2xl font-bold mb-6">Your Cart</h1>
 
     <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
       <p class="mt-4 text-gray-600">Đang tải giỏ hàng...</p>
     </div>
 
     <div v-else-if="error" class="text-center py-12 bg-white rounded-lg shadow-md">
       <p class="text-red-600 mb-4">{{ error }}</p>
-      <button @click="loadCart" class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700">
+      <button @click="loadCart" class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700">
         Thử lại
       </button>
     </div>
@@ -77,7 +77,7 @@
               Clear Cart
             </button>
 
-            <router-link to="/" class="text-rose-600 hover:text-rose-800 flex items-center">
+            <router-link to="/" class="text-orange-600 hover:text-orange-800 flex items-center">
               <ArrowLeft class="h-5 w-5 mr-1" />
               Continue Shopping
             </router-link>
@@ -104,7 +104,7 @@
 
             <button
               @click="handleCheckout"
-              class="block w-full bg-rose-600 text-white text-center py-3 px-4 rounded-lg hover:bg-rose-700"
+              class="block w-full bg-orange-600 text-white text-center py-3 px-4 rounded-lg hover:bg-orange-700"
             >
               Proceed to Checkout
             </button>
@@ -117,7 +117,7 @@
       <ShoppingCart class="h-16 w-16 mx-auto text-gray-400 mb-4" />
       <h3 class="text-xl font-semibold text-gray-700 mb-2">Giỏ hàng trống</h3>
       <p class="text-gray-500 mb-6">Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
-      <router-link to="/" class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700">
+      <router-link to="/" class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700">
         Mua sắm ngay
       </router-link>
     </div>

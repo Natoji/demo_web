@@ -4,14 +4,14 @@
       <div class="container mx-auto px-4 flex flex-col items-center text-center">
         <h1 class="text-4xl md:text-5xl font-bold mb-4">Delicious Food Delivered to Your Door</h1>
         <p class="text-xl mb-8 max-w-2xl">Explore our menu of fresh, tasty dishes prepared by expert chefs and delivered right to your doorstep.</p>
-        <button class="bg-white text-rose-600 font-bold py-3 px-8 rounded-full hover:bg-rose-100 transition duration-300">
+        <button class="bg-white text-orange-600 font-bold py-3 px-8 rounded-full hover:bg-orange-100 transition duration-300">
           Order Now
         </button>
       </div>
     </div>
 
     <div v-if="loading" class="container mx-auto px-4 py-8 text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
       <p class="mt-4 text-gray-600">Loading menu items...</p>
     </div>
 
@@ -29,7 +29,7 @@
         <button
           @click="selectedCategory = null"
           class="px-4 py-2 rounded-full"
-          :class="selectedCategory === null ? 'bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300'"
+          :class="selectedCategory === null ? 'bg-orange-600 text-white' : 'bg-gray-200 hover:bg-gray-300'"
         >
           All
         </button>
@@ -38,7 +38,7 @@
           :key="category.id"
           @click="selectedCategory = category.id"
           class="px-4 py-2 rounded-full"
-          :class="selectedCategory === category.id ? 'bg-rose-600 text-white' : 'bg-gray-200 hover:bg-gray-300'"
+          :class="selectedCategory === category.id ? 'bg-orange-600 text-white' : 'bg-gray-200 hover:bg-gray-300'"
         >
           {{ category.name }}
         </button>
@@ -50,7 +50,7 @@
             type="text"
             v-model="searchQuery"
             placeholder="Search for food..."
-            class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-rose-500"
+            class="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
           <Search class="absolute right-3 text-gray-500 h-5 w-5" />
         </div>
@@ -75,23 +75,23 @@
           <div class="p-4">
             <router-link :to="`/product/${product.id}`" class="block">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-bold hover:text-rose-600 transition-colors">
+                <h3 class="text-lg font-bold hover:text-orange-600 transition-colors">
                   {{ product.name }}
                 </h3>
-                <span class="bg-rose-100 text-rose-800 text-xs font-semibold px-2 py-1 rounded-full">{{ getCategoryNameForProduct(product.category) }}</span>
+                <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded-full">{{ getCategoryNameForProduct(product.category) }}</span>
               </div>
 
               <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description }}</p>
 
               <div class="flex justify-between items-center">
-                <span class="text-rose-600 font-bold">{{ Number(product.price).toFixed(2) }} VNĐ</span>
+                <span class="text-orange-600 font-bold">{{ Number(product.price).toFixed(2) }} VNĐ</span>
               </div>
             </router-link>
 
             <div class="flex justify-end mt-4">
               <button
                 @click="addToCart(product)"
-                class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-rose-700 flex items-center justify-center gap-2"
+                class="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-700 flex items-center justify-center gap-2"
               >
                 <ShoppingCart class="h-5 w-5" />
                 Add to cart

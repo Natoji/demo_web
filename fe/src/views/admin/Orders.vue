@@ -24,7 +24,7 @@
               id="search"
               v-model="searchQuery"
               placeholder="Search by order ID"
-              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+              class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <Search class="absolute right-3 top-2.5 text-gray-500 h-5 w-5" />
           </div>
@@ -35,7 +35,7 @@
           <select
             id="dateRange"
             v-model="dateRange"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="all">All Time</option>
             <option value="today">Today</option>
@@ -152,7 +152,7 @@
           <div class="flex justify-end mt-4">
             <button
               @click="showOrderDetailsModal = false"
-              class="bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700"
+              class="bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700"
             >
               Close
             </button>

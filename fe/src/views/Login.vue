@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-10">
-    <div class="bg-rose-600 text-white py-4 px-6">
+    <div class="bg-orange-600 text-white py-4 px-6">
       <h2 class="text-xl font-bold">Login to Your Account</h2>
     </div>
 
@@ -15,7 +15,7 @@
           type="email"
           id="email"
           v-model="email"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
@@ -26,23 +26,23 @@
           type="password"
           id="password"
           v-model="password"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
 
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center">
-          <input type="checkbox" id="remember" class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded">
+          <input type="checkbox" id="remember" class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
           <label for="remember" class="ml-2 block text-gray-700">Remember me</label>
         </div>
 
-        <a href="#" class="text-rose-600 hover:text-rose-800">Forgot password?</a>
+        <a href="#" class="text-orange-600 hover:text-orange-800">Forgot password?</a>
       </div>
 
       <button
         type="submit"
-        class="w-full bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+        class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         :disabled="loading"
       >
         <span v-if="loading">Loading...</span>
@@ -52,7 +52,7 @@
       <div class="mt-4 text-center">
         <p class="text-gray-600">
           Don't have an account?
-          <router-link to="/register" class="text-rose-600 hover:text-rose-800">Register</router-link>
+          <router-link to="/register" class="text-orange-600 hover:text-orange-800">Register</router-link>
         </p>
       </div>
     </form>

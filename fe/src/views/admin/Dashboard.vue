@@ -6,7 +6,7 @@
       <!-- Dashboard Cards -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center">
-          <div class="p-3 rounded-full bg-rose-100 text-rose-600 mr-4">
+          <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
             <ShoppingCart class="h-6 w-6" />
           </div>
           <div>
@@ -74,7 +74,7 @@
       <div class="lg:col-span-2 bg-white rounded-lg shadow-md overflow-hidden">
         <div class="p-4 border-b flex justify-between items-center">
           <h2 class="text-lg font-semibold">Recent Orders</h2>
-          <router-link to="/admin/orders" class="text-rose-600 hover:text-rose-800 text-sm">View All</router-link>
+          <router-link to="/admin/orders" class="text-orange-600 hover:text-orange-800 text-sm">View All</router-link>
         </div>
         
         <div class="overflow-x-auto">

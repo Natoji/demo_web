@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-10">
-    <div class="bg-rose-600 text-white py-4 px-6">
+    <div class="bg-orange-600 text-white py-4 px-6">
       <h2 class="text-xl font-bold">Create an Account</h2>
     </div>
 
@@ -19,7 +19,7 @@
           type="text"
           id="fullname"
           v-model="fullname"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
@@ -30,7 +30,7 @@
           type="email"
           id="email"
           v-model="email"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
@@ -41,7 +41,7 @@
           type="password"
           id="password"
           v-model="password"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
@@ -53,7 +53,7 @@
           type="password"
           id="confirmPassword"
           v-model="confirmPassword"
-          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           required
         >
       </div>
@@ -64,19 +64,19 @@
             type="checkbox"
             id="terms"
             v-model="agreeToTerms"
-            class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+            class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
             required
           >
           <label for="terms" class="ml-2 block text-gray-700">
             I agree to the
-            <a href="#" class="text-rose-600 hover:text-rose-800">Terms and Conditions</a>
+            <a href="#" class="text-orange-600 hover:text-orange-800">Terms and Conditions</a>
           </label>
         </div>
       </div>
 
       <button
         type="submit"
-        class="w-full bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+        class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         :disabled="loading || !agreeToTerms"
       >
         <span v-if="loading">Loading...</span>
@@ -86,7 +86,7 @@
       <div class="mt-4 text-center">
         <p class="text-gray-600">
           Already have an account?
-          <router-link to="/login" class="text-rose-600 hover:text-rose-800">Login</router-link>
+          <router-link to="/login" class="text-orange-600 hover:text-orange-800">Login</router-link>
         </p>
       </div>
     </form>

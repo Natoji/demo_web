@@ -1,21 +1,21 @@
 <template>
   <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden mt-6">
-    <div class="bg-rose-600 text-white py-4 px-6">
+    <div class="bg-orange-600 text-white py-4 px-6">
       <h2 class="text-xl font-bold">Thanh toán</h2>
     </div>
 
     <div class="p-6">
       <div v-if="loading" class="text-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
         <p class="mt-4 text-gray-600">Đang tải thông tin...</p>
       </div>
 
       <div v-else-if="error" class="text-center py-12 bg-white rounded-lg shadow-md">
         <p class="text-red-600 mb-4">{{ error }}</p>
-        <button @click="loadData" class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700">
+        <button @click="loadData" class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700">
           Thử lại
         </button>
-        <router-link to="/cart" class="ml-4 text-rose-600 hover:text-rose-800">
+        <router-link to="/cart" class="ml-4 text-orange-600 hover:text-orange-800">
           Quay lại giỏ hàng
         </router-link>
       </div>
@@ -59,7 +59,7 @@
           <ShoppingCart class="h-16 w-16 mx-auto text-gray-400 mb-4" />
           <h3 class="text-xl font-semibold text-gray-700 mb-2">Giỏ hàng của bạn đang trống</h3>
           <p class="text-gray-500 mb-4">Thêm sản phẩm vào giỏ hàng để tiến hành thanh toán.</p>
-          <router-link to="/" class="inline-block bg-rose-600 text-white py-2 px-4 rounded-lg hover:bg-rose-700">
+          <router-link to="/" class="inline-block bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700">
             Xem menu
           </router-link>
         </div>
@@ -73,25 +73,25 @@
             <div>
               <label for="fullName" class="block text-gray-700 font-medium mb-2">Họ và tên</label>
               <input type="text" id="fullName" v-model="form.fullName"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
             </div>
 
             <div>
               <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
               <input type="email" id="email" v-model="form.email"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
             </div>
 
             <div>
               <label for="phone" class="block text-gray-700 font-medium mb-2">Số điện thoại</label>
               <input type="tel" id="phone" v-model="form.phone"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
             </div>
 
             <div>
               <label for="address" class="block text-gray-700 font-medium mb-2">Địa chỉ giao hàng</label>
               <input type="text" id="address" v-model="form.address"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500" required>
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
             </div>
           </div>
 
@@ -100,7 +100,7 @@
           <div class="space-y-4 mb-6">
             <!-- <div class="flex items-center">
               <input type="radio" id="vnpay" value="vnpay" v-model="form.paymentMethod"
-                class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
+                class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
                 :checked="form.paymentMethod === 'vnpay'">
               <label for="vnpay" class="ml-2 block text-gray-700">
                 VNPay
@@ -109,7 +109,7 @@
 
             <div class="flex items-center">
               <input type="radio" id="cashOnDelivery" value="cashOnDelivery" v-model="form.paymentMethod"
-                class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
+                class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
                 :checked="form.paymentMethod === 'cod'">
               <label for="cashOnDelivery" class="ml-2 block text-gray-700">
                 Thanh toán khi nhận hàng
@@ -119,9 +119,9 @@
 
           <div class="flex items-center mb-6">
             <input type="checkbox" id="terms" v-model="form.termsAccepted"
-              class="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded" required>
+              class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded" required>
             <label for="terms" class="ml-2 block text-gray-700">
-              Tôi đồng ý với <a href="#" class="text-rose-600 hover:text-rose-800">Điều khoản và điều kiện</a>
+              Tôi đồng ý với <a href="#" class="text-orange-600 hover:text-orange-800">Điều khoản và điều kiện</a>
             </label>
           </div>
 
@@ -132,7 +132,7 @@
             </router-link>
 
             <button type="submit"
-              class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+              class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               :disabled="loading || !form.termsAccepted">
               <span v-if="loading">Đang xử lý...</span>
               <span v-else>Đặt hàng</span>
@@ -153,10 +153,10 @@
 
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <p class="text-gray-700 font-medium">Mã đơn hàng</p>
-          <p class="text-xl font-bold text-rose-600">{{ orderNumber }}</p>
+          <p class="text-xl font-bold text-orange-600">{{ orderNumber }}</p>
         </div>
 
-        <button @click="goToOrders" class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700 w-full">
+        <button @click="goToOrders" class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700 w-full">
           Xem đơn hàng của tôi
         </button>
       </div>

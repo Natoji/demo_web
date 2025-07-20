@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div v-if="loading" class="flex justify-center items-center h-64">
-      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rose-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600"></div>
     </div>
 
     <div v-else-if="product" class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -27,11 +27,11 @@
           <div class="flex justify-between items-start">
             <div>
               <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ product.name }}</h1>
-              <span class="inline-block bg-rose-100 text-rose-800 text-sm font-semibold px-3 py-1 rounded-full mb-4">
+              <span class="inline-block bg-orange-100 text-orange-800 text-sm font-semibold px-3 py-1 rounded-full mb-4">
                 {{ getCategoryName(product.category) }}
               </span>
             </div>
-            <span class="text-2xl font-bold text-rose-600">${{ Number(product.price).toFixed(2) }}</span>
+            <span class="text-2xl font-bold text-orange-600">${{ Number(product.price).toFixed(2) }}</span>
           </div>
 
           <div class="mb-6">
@@ -69,14 +69,14 @@
           <div class="flex flex-col sm:flex-row gap-4">
             <button
               @click="addToCart"
-              class="flex-1 bg-rose-600 text-white py-3 px-6 rounded-lg hover:bg-rose-700 flex items-center justify-center gap-2"
+              class="flex-1 bg-orange-600 text-white py-3 px-6 rounded-lg hover:bg-orange-700 flex items-center justify-center gap-2"
             >
               <ShoppingCart class="h-5 w-5" />
               Add to Cart
             </button>
 
             <button
-              class="flex-1 border border-rose-600 text-rose-600 py-3 px-6 rounded-lg hover:bg-rose-50 flex items-center justify-center gap-2"
+              class="flex-1 border border-orange-600 text-orange-600 py-3 px-6 rounded-lg hover:bg-orange-50 flex items-center justify-center gap-2"
             >
               <Heart class="h-5 w-5" />
               Add to Favorites
@@ -107,7 +107,7 @@
       <AlertCircle class="h-16 w-16 mx-auto text-gray-400 mb-4" />
       <h3 class="text-xl font-semibold text-gray-700 mb-2">Product not found</h3>
       <p class="text-gray-500 mb-6">The product you're looking for doesn't exist or has been removed.</p>
-      <router-link to="/" class="bg-rose-600 text-white py-2 px-6 rounded-lg hover:bg-rose-700">
+      <router-link to="/" class="bg-orange-600 text-white py-2 px-6 rounded-lg hover:bg-orange-700">
         Back to Home
       </router-link>
     </div>
