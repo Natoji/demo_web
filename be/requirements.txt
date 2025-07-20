@@ -94,3 +94,4 @@ urllib3==2.3.0
 wcwidth==0.2.13
 websocket-client==1.8.0
 wsproto==1.2.0
+gunicorn
